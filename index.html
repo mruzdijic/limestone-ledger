@@ -172,10 +172,11 @@ input[type=text]:focus{border-color:var(--forest);outline:none;box-shadow:0 0 0 
 .annot{font:500 1.28rem/1.2 var(--hand);color:var(--lake-dark);margin:2px 0 12px;transform:rotate(-1.5deg);transform-origin:left}
 .clue-card{position:relative;margin:8px 0 18px;padding:20px 22px 20px 20px;background:#FFFDF7;border:1px solid #E5DCCB;border-radius:2px;
   box-shadow:0 1px 1px rgba(41,43,40,.07),0 8px 16px -10px rgba(41,43,40,.35);transform:rotate(var(--crot,-.6deg))}
-.clue-card::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 31px,rgba(98,127,145,.16) 31px 32px);background-position:0 18px;pointer-events:none}
+.clue-card::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 31px,rgba(98,127,145,.2) 31px 32px);background-position:0 3px;pointer-events:none}
 .clue-card::after{content:"";position:absolute;right:-1px;top:-1px;width:26px;height:26px;background:linear-gradient(225deg,var(--paper) 50%,#E9E0CE 50%,#DDD2BD);box-shadow:-2px 2px 3px rgba(41,43,40,.12)}
-.clue-text{position:relative;margin:0;font:500 1.14rem/32px var(--sans);color:var(--charcoal);white-space:pre-line}
-.clue-label{position:relative;display:block;font:500 1.15rem/1 var(--hand);color:var(--brass-dark);margin-bottom:6px}
+.clue-text{position:relative;margin:0;font:500 1.5rem/32px var(--hand);color:#2E3A33}
+.clue-text .cl{display:block;padding-left:.9em;text-indent:-.9em}
+.clue-label{position:relative;display:block;font:700 .7rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--brass-dark);margin-bottom:10px}
 .unlock{margin-top:6px}
 .unlock label{display:block;font:600 1.02rem/1.3 var(--sans);margin-bottom:6px}
 .hints{margin:10px 0 0}
@@ -411,7 +412,7 @@ const CONFIG = {
   story: {
     intro: [
       "Kingston, 1844. For three short years this limestone town has been the capital of the United Province of Canada. Now the capital is moving to Montreal, and the government is packing up.",
-      "Among those packing is a young clerk named Thaddeus Penwright (he's made up; the places aren't). On his last night he leaves a note at the front desk of the inn:",
+      "Among those packing is a young clerk named Thaddeus Penwright. On his last night he leaves a note at the front desk of the inn:",
     ],
     note: "“I am leaving behind the finest thing I found in Kingston. I could not fit it in my trunk. Follow my four clues, keep a page for each stop, and you will find it.”\n— T. P., Clerk",
     outro: "Your job: follow his trail through downtown, unlock each page of the ledger, and add a photo at every stop. All four stops are within a few minutes' walk of each other.",
@@ -617,7 +618,7 @@ async function photoURL(i) {
 async function wipeEverything() {
   for (let i = 0; i < N; i++) revokeURL(i);
   memPhotos.clear();
-  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  try { localStorage.removeItem(LS_KEY); localStorage.removeItem("limestone-ledger-sound"); } catch (e) {}
   try {
     if (dbPromise) { const db = await dbPromise.catch(() => null); if (db) db.close(); }
     dbPromise = null;
@@ -785,6 +786,52 @@ const app = document.getElementById("app");
 const ROMAN = ["I", "II", "III", "IV", "V", "VI"];
 const GLYPH = { market: "g-market", cityhall: "g-dome", park: "g-arch", tower: "g-tower" };
 const REDUCED = (() => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } })();
+
+/* ---- Page-turn sound ----
+   Synthesised on the phone with the Web Audio API (filtered noise shaped like a paper
+   rustle and a soft landing flap). No audio file and no network: nothing is downloaded.
+   On iPhone the ring/silent switch mutes it, like any web sound. */
+const SOUND_KEY = "limestone-ledger-sound";
+let audioCtx = null, paperNoise = null;
+function soundOn() { try { return localStorage.getItem(SOUND_KEY) !== "off"; } catch (e) { return true; } }
+function setSound(on) { try { if (on) localStorage.removeItem(SOUND_KEY); else localStorage.setItem(SOUND_KEY, "off"); } catch (e) {} }
+function pageTurnGraph(ctx, t) {
+  const sr = ctx.sampleRate;
+  if (!paperNoise || paperNoise.sampleRate !== sr) {
+    paperNoise = ctx.createBuffer(1, Math.floor(sr * 0.8), sr);
+    const d = paperNoise.getChannelData(0); let last = 0;
+    for (let i = 0; i < d.length; i++) { last = last * 0.55 + (Math.random() * 2 - 1) * 0.45; d[i] = last; } // softened noise = paper, not hiss
+  }
+  // the rustle: lift, a slight catch, then the sweep across
+  const src = ctx.createBufferSource(); src.buffer = paperNoise;
+  const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 380;
+  const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 0.85;
+  bp.frequency.setValueAtTime(900, t); bp.frequency.linearRampToValueAtTime(3000, t + 0.16);
+  bp.frequency.linearRampToValueAtTime(1900, t + 0.32); bp.frequency.linearRampToValueAtTime(1100, t + 0.5);
+  const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.32, t + 0.04); g.gain.linearRampToValueAtTime(0.12, t + 0.1);
+  g.gain.linearRampToValueAtTime(0.6, t + 0.21); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+  src.connect(hp).connect(bp).connect(g).connect(ctx.destination);
+  src.start(t, Math.random() * 0.15); src.stop(t + 0.55);
+  // the page landing: a short, soft, low flap
+  const s2 = ctx.createBufferSource(); s2.buffer = paperNoise;
+  const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 650;
+  const g2 = ctx.createGain(); g2.gain.setValueAtTime(0.0001, t + 0.37);
+  g2.gain.linearRampToValueAtTime(0.75, t + 0.395); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+  s2.connect(lp).connect(g2).connect(ctx.destination);
+  s2.start(t + 0.37, 0.3); s2.stop(t + 0.52);
+}
+function playPageTurn() {
+  if (!soundOn()) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!audioCtx) audioCtx = new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    pageTurnGraph(audioCtx, audioCtx.currentTime + 0.02);
+  } catch (e) { /* sound is a nicety; never let it break the page */ }
+}
+let quietNextTurn = false;
 // Small per-page differences so each page looks individually assembled.
 const DECOR = [
   { rot: "-2.2deg", srot: "-9deg", crot: "-.6deg", nrot: "1.2deg", frot: ".4deg", annot: "His first clue, in careful copperplate:" },
@@ -799,6 +846,9 @@ function hintsUsed(s) { return s.hints || (s.hint ? 1 : 0); }
 
 function go(screen, stop) {
   const before = ORDER(state.screen);
+  const changed = screen !== state.screen || (typeof stop === "number" && stop !== state.stop);
+  if (changed && !quietNextTurn) playPageTurn();
+  quietNextTurn = false;
   state.screen = screen;
   if (typeof stop === "number") state.stop = stop;
   if (screen === "stop") {
@@ -899,6 +949,7 @@ function renderConsent() {
     window.scrollTo(0, 0);
     $("#bookplate").style.visibility = "hidden";
     $("#cover").classList.add("opening");
+    playPageTurn(); quietNextTurn = true;
     setTimeout(() => go("intro"), 600);
   };
 }
@@ -917,7 +968,7 @@ function renderIntro() {
     ${rest.map(p => `<p>${esc(p)}</p>`).join("")}
     <div class="letter" role="note" aria-label="The clerk's note">
       <p>${esc(st.note.replace(/\n?—.*$/, ""))}<span class="sig">— T. P., Clerk</span></p>
-      <svg class="wax" viewBox="0 0 50 50" aria-hidden="true"><path d="M25 3c4 0 5 3 8 4s7 0 9 4-1 6 0 9 4 5 2 9-5 3-7 6-1 7-5 9-6-1-9 0-5 4-9 2-2-5-5-7-7-1-9-5 1-6 0-9-4-5-2-9 5-3 7-6 1-7 5-9 6 1 9 0z" fill="#7E3B2F"/><circle cx="25" cy="25" r="11" fill="none" stroke="#A65A49" stroke-width="1.5"/><text x="25" y="29.5" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="700" font-size="12" fill="#C98A78">TP</text></svg>
+      <svg class="wax" viewBox="0 0 50 50" aria-hidden="true"><path d="${waxPath(25, 25, 23)}" fill="#7E3B2F"/><circle cx="25" cy="25" r="15" fill="#8A4436" stroke="#A65A49" stroke-width="1.2"/><text x="25" y="29.2" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="700" font-size="11.5" fill="#EBC9B9">TP</text></svg>
     </div>
     <p>${esc(st.outro)}</p>
     <p class="small"><em>A made-up story built on real places and real history.</em></p>
@@ -982,7 +1033,7 @@ function chapterPage(i) {
     <p class="annot">${esc(d.annot)}</p>
     <div class="clue-card" id="clueCard" style="--crot:${d.crot}">
       <span class="clue-label" aria-hidden="true">the clue</span>
-      <p class="clue-text" aria-label="Clue">${esc(cfg.clue)}</p>
+      <p class="clue-text" aria-label="Clue">${cfg.clue.split(/\r?\n/).map(l => `<span class="cl">${esc(l)}</span>`).join("")}</p>
     </div>
     ${state.tabletop ? `<details><summary>Show the sketch map</summary>${mapSVG(i)}</details>` : ""}
     <form id="answerForm" class="unlock" autocomplete="off" novalidate>
@@ -1159,11 +1210,17 @@ function bindUnlocked(i) {
 function footerLinks() {
   return `<div class="footer-links">
     ${state.screen !== "intro" ? `<button class="btn ghost" type="button" data-act="story">Re-read the story</button>` : ""}
+    <button class="btn ghost" type="button" data-act="sound" aria-pressed="${soundOn()}">${soundOn() ? "Sound: on" : "Sound: off"}</button>
     <button class="btn ghost" type="button" data-act="reset">Start over</button></div>`;
 }
 function bindFooter() {
   app.querySelectorAll("[data-act=story]").forEach(b => b.onclick = () => go("intro"));
   app.querySelectorAll("[data-act=reset]").forEach(b => b.onclick = askReset);
+  app.querySelectorAll("[data-act=sound]").forEach(b => b.onclick = () => {
+    const on = !soundOn(); setSound(on);
+    b.textContent = on ? "Sound: on" : "Sound: off"; b.setAttribute("aria-pressed", String(on));
+    if (on) playPageTurn();
+  });
 }
 function askReset() {
   const d = $("#confirmReset");
@@ -1275,13 +1332,28 @@ let exportFile = null, exportURL = null;
 // Where each photo "comes from" before it lands in the final spread (stop-motion assembly).
 const ARRIVE = [{ fx: "-40px", fy: "-50px", fr: "-12deg" }, { fx: "36px", fy: "-60px", fr: "10deg" }, { fx: "-30px", fy: "40px", fr: "9deg" }, { fx: "40px", fy: "30px", fr: "-11deg" }];
 
+// Irregular but perfectly centred wax blob: lobed outline built around (cx, cy).
+function waxPath(cx, cy, r, lobes = 13) {
+  const pts = [];
+  for (let k = 0; k < lobes * 2; k++) {
+    const a = (k / (lobes * 2)) * Math.PI * 2 - Math.PI / 2;
+    const rr = r * (k % 2 ? 0.9 : 1) * (1 + 0.035 * Math.sin(k * 2.7) + 0.025 * Math.cos(k * 4.3));
+    pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]);
+  }
+  const mid = (p, q) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+  let d = "M" + mid(pts[pts.length - 1], pts[0]).map(v => v.toFixed(2)).join(" ");
+  pts.forEach((p, k) => { const m = mid(p, pts[(k + 1) % pts.length]); d += `Q${p[0].toFixed(2)} ${p[1].toFixed(2)} ${m[0].toFixed(2)} ${m[1].toFixed(2)}`; });
+  return d + "Z";
+}
 function waxSeal(size) {
   return `<svg class="seal" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
-    <path d="M50 4c6 0 8 5 13 6s11-1 14 5-2 9 0 14 7 7 5 13-8 5-10 10-1 11-7 14-9-2-14 0-8 7-14 5-5-8-10-10-11 1-14-5 2-9 0-14-7-7-5-13 8-5 10-10 1-11 7-14 9 2 14 0 8-7 14-5z" fill="#344B3C"/>
-    <circle cx="50" cy="50" r="30" fill="none" stroke="#5E7A66" stroke-width="2"/>
-    <circle cx="50" cy="50" r="25" fill="none" stroke="#5E7A66" stroke-width="1" stroke-dasharray="2 3"/>
-    <text x="50" y="47" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10" font-weight="700" letter-spacing=".8" fill="#CDB688">CASE</text>
-    <text x="50" y="61" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10" font-weight="700" letter-spacing=".4" fill="#CDB688">CLOSED</text>
+    <path d="${waxPath(50, 50, 47)}" fill="#7E3B2F"/>
+    <path d="${waxPath(50, 50, 47)}" fill="none" stroke="#5E2A21" stroke-width="1.2" opacity=".6"/>
+    <circle cx="50" cy="50" r="34" fill="#8A4436"/>
+    <circle cx="50" cy="50" r="34" fill="none" stroke="#A65A49" stroke-width="2"/>
+    <circle cx="50" cy="50" r="29" fill="none" stroke="#A65A49" stroke-width="1" stroke-dasharray="2 3"/>
+    <text x="50" y="47.5" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10.5" font-weight="700" letter-spacing=".8" fill="#EBC9B9">CASE</text>
+    <text x="50" y="61" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10.5" font-weight="700" letter-spacing=".3" fill="#EBC9B9">CLOSED</text>
   </svg>`;
 }
 
@@ -1541,12 +1613,15 @@ function brassRule(ctx, cx, y, half, color) {
 }
 function drawSeal(ctx, x, y, r, C, SERIF) {
   ctx.save(); ctx.translate(x, y);
-  ctx.fillStyle = C.forest; ctx.beginPath();
-  for (let a = 0; a <= 24; a++) { const ang = a / 24 * Math.PI * 2, rr = r * (a % 2 ? .93 : 1); ctx.lineTo(Math.cos(ang) * rr, Math.sin(ang) * rr); }
-  ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "#5E7A66"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, r * .68, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = "#CDB688"; ctx.textAlign = "center"; ctx.font = `700 15px ${SERIF}`;
-  ctx.fillText("CASE", 0, -3); ctx.fillText("CLOSED", 0, 16);
+  ctx.shadowColor = "rgba(41,43,40,.25)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+  ctx.fillStyle = "#7E3B2F"; ctx.fill(new Path2D(waxPath(0, 0, r)));
+  ctx.shadowColor = "transparent";
+  ctx.fillStyle = "#8A4436"; ctx.beginPath(); ctx.arc(0, 0, r * .72, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#A65A49"; ctx.lineWidth = 2; ctx.stroke();
+  ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, 0, r * .61, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = "#EBC9B9"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = `700 ${Math.round(r * .23)}px ${SERIF}`;
+  ctx.fillText("CASE", 0, -r * .15); ctx.fillText("CLOSED", 0, r * .17);
+  ctx.textBaseline = "alphabetic";
   ctx.restore();
 }
 function tape(ctx, x, y, w, h, deg, color) {
