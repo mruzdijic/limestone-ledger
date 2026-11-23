@@ -1,5 +1,7 @@
 # The Limestone Ledger: A Kingston Scrapbook Mystery
 
+> **Coming back later?** Start with [PROJECT-NOTES.md](PROJECT-NOTES.md): where things stand, how the code is organized, history and open items.
+
 A low-fidelity prototype for ENIN 301 (Creative Entrepreneurship), Queen's University, Team 37.
 Guests scan a QR code on a postcard, follow four riddles to downtown Kingston landmarks, add a photo at each stop, and save the finished scrapbook as one image.
 
@@ -15,6 +17,8 @@ It's a static website with no server, no sign-up, no analytics, and nothing load
 | `qr.js` | Small QR code generator used by the postcard. It runs offline, so no QR website ever sees your link. |
 | `fonts/` | Bundled fonts: **Fraunces** (headings) and **Caveat** (handwriting), both SIL Open Font License (licence files included). Served from the repo, so no font service is contacted. |
 | `sounds/` | The page-turn sound (MP3, about 80 KB). |
+| `tests/flow.test.js` | Automated end-to-end test (how to run it: see PROJECT-NOTES.md). |
+| `PROJECT-NOTES.md` | Project state, history, decisions, open items. |
 | `icon.svg`, `manifest.webmanifest` | Browser tab icon and "Add to Home Screen" info. |
 
 ---
