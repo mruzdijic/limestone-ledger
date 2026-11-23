@@ -7,116 +7,382 @@
 <meta name="robots" content="noindex">
 <!-- Privacy: this page loads nothing from other websites. Only 'self' is allowed. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; form-action 'none'; base-uri 'none'">
-<meta name="theme-color" content="#f4efe4">
+<meta name="theme-color" content="#F5F0E6">
 <title>The Limestone Ledger</title>
+<link rel="preload" href="fonts/fraunces-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/caveat-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
+/* =====================================================================
+   THE LIMESTONE LEDGER: design system
+   Fonts are bundled in /fonts (SIL Open Font License); nothing external.
+   ===================================================================== */
+@font-face{font-family:"Fraunces";src:url(fonts/fraunces-latin-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Fraunces";src:url(fonts/fraunces-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Fraunces";src:url(fonts/fraunces-latin-600-normal.woff2) format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Fraunces";src:url(fonts/fraunces-latin-700-normal.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Caveat";src:url(fonts/caveat-latin-500-normal.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Caveat";src:url(fonts/caveat-latin-700-normal.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
+
 :root{
-  --paper:#f6f1e6; --paper-2:#ede5d3; --ink:#1f2a33; --ink-soft:#3f4b55;
-  --stone:#8b8c87; --stone-light:#cfcbc0; --lake:#1f5f7a; --lake-dark:#174a60;
-  --lake-light:#d6e7ee; --tape:#e9c98b; --tape-2:#b9d3d9; --red:#a8432f; --ok:#2f6b45;
-  --hand:"Segoe Print","Bradley Hand","Noteworthy","Marker Felt","Chalkboard SE","Comic Neue",cursive;
-  --body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --serif:Georgia,"Times New Roman",serif;
+  /* palette */
+  --parchment:#F5F0E6; --paper:#FBF8F1; --limestone:#D8CEBD; --limestone-2:#E8E0D1;
+  --forest:#344B3C; --forest-dark:#24362B; --forest-ink:#2C4234; --lake:#627F91; --lake-dark:#4A6576;
+  --charcoal:#292B28; --ink-soft:#4F514B; --brass:#AD9160; --brass-dark:#7A6439; --brass-light:#CDB688;
+  --oxblood:#7E3B2F; --tape:rgba(216,196,154,.82); --tape-2:rgba(169,187,191,.78);
+  /* type */
+  --serif:"Fraunces",Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --hand:"Caveat","Segoe Print","Bradley Hand",cursive;
+  /* paper grain (inline SVG noise, no external file) */
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  --fibres:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .33 0 0 0 0 .2 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23f)'/%3E%3C/svg%3E");
+  --shadow-paper:0 1px 1px rgba(41,43,40,.08),0 3px 6px rgba(41,43,40,.07),0 14px 28px -12px rgba(41,43,40,.25);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%;overflow-x:hidden;overflow-x:clip}
-body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 var(--body);
-  background-image:radial-gradient(rgba(120,100,60,.06) 1px,transparent 1px);background-size:6px 6px;
-  min-height:100vh;overflow-x:hidden}
-h1,h2,h3{font-family:var(--hand);line-height:1.2;color:var(--lake-dark);margin:.2em 0 .5em}
-h1{font-size:1.9rem} h2{font-size:1.6rem} h3{font-size:1.2rem}
-p{margin:.5em 0 .9em}
-a{color:var(--lake)}
-.wrap{max-width:560px;margin:0 auto;padding:12px 16px 48px}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;max-width:560px;margin:0 auto}
-.brand{font-family:var(--hand);color:var(--lake-dark);font-size:1rem;text-decoration:none}
-.progress{display:flex;gap:6px;align-items:center}
-.dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--lake);background:transparent}
-.dot.done{background:var(--lake)} .dot.cur{box-shadow:0 0 0 3px var(--lake-light)}
-.page{background:#fffdf8;border-radius:6px;padding:22px 18px 24px;position:relative;
-  box-shadow:0 1px 0 var(--stone-light),0 8px 24px rgba(40,40,30,.12);border:1px solid #e6dcc7;margin-top:14px}
-.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:6px 0 0 6px;
-  background:repeating-linear-gradient(var(--paper-2) 0 10px,#e3d9c3 10px 20px)}
-.tape{position:absolute;top:-12px;width:110px;height:26px;background:var(--tape);opacity:.85;
-  box-shadow:0 1px 2px rgba(0,0,0,.12);
-  -webkit-mask:linear-gradient(90deg,transparent 0 3px,#000 3px calc(100% - 3px),transparent 0);
-  mask:linear-gradient(90deg,transparent 0 3px,#000 3px calc(100% - 3px),transparent 0)}
-.tape.l{left:18px;transform:rotate(-4deg)} .tape.r{right:18px;transform:rotate(3deg);background:var(--tape-2)}
-.kicker{font:600 .8rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin:0 0 6px}
-.clue{font-family:var(--serif);font-style:italic;font-size:1.12rem;background:var(--paper);border-left:4px solid var(--lake);
-  padding:12px 14px;margin:12px 0;white-space:pre-line}
-.note{background:var(--lake-light);border-radius:6px;padding:12px 14px;margin:14px 0}
-.note h3{margin-top:0;font-size:1.1rem}
-.muted{color:var(--ink-soft);font-size:.95rem}
-.small{font-size:.9rem;color:var(--ink-soft)}
-ul.plain{padding-left:1.2em;margin:.4em 0 1em} ul.plain li{margin:.3em 0}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;min-width:44px;padding:10px 18px;
-  font:600 1rem/1.2 var(--body);border-radius:10px;border:2px solid var(--lake);background:var(--lake);color:#fff;
-  cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
-.btn:active{transform:translateY(1px)}
-.btn.secondary{background:#fff;color:var(--lake-dark)}
-.btn.ghost{background:transparent;border-color:transparent;color:var(--lake-dark);text-decoration:underline;padding:10px 8px}
-.btn.block{width:100%}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-.row>.btn{flex:1 1 140px}
-:focus-visible{outline:3px solid #e08a00;outline-offset:2px}
-label{font-weight:600}
-input[type=text]{width:100%;min-height:48px;font:1.05rem var(--body);padding:10px 12px;border:2px solid var(--stone);
-  border-radius:8px;background:#fff;color:var(--ink)}
-input[type=text]:focus{border-color:var(--lake)}
-.check{display:flex;gap:12px;align-items:flex-start;padding:12px;border:2px dashed var(--stone-light);border-radius:8px;margin:14px 0;font-weight:600;cursor:pointer}
-.check input{width:26px;height:26px;flex:0 0 26px;margin:0;accent-color:var(--lake)}
-.feedback{min-height:1.5em;font-weight:600;margin:6px 0}
-.feedback.bad{color:var(--red)} .feedback.good{color:var(--ok)}
-.hint{background:#fff6df;border:1px solid var(--tape);border-radius:6px;padding:10px 12px;margin:10px 0}
-.toggle{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--paper);border-radius:8px;margin:12px 0;cursor:pointer;font-weight:600}
-.toggle input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--lake)}
-/* Polaroid */
-.polaroid{background:#fff;padding:12px 12px 14px;box-shadow:0 6px 18px rgba(0,0,0,.18);width:min(100%,320px);margin:22px auto 10px;position:relative;transform:rotate(-1.8deg)}
-.polaroid.alt{transform:rotate(1.6deg)}
-.polaroid .tape{top:-13px;left:50%;margin-left:-55px;transform:rotate(-2deg)}
-.photo{aspect-ratio:1/1;background:#e9e4da;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo .empty{color:var(--stone);font-family:var(--hand);text-align:center;padding:12px}
-.polaroid figcaption{font-family:var(--hand);text-align:center;margin-top:10px;min-height:1.4em;font-size:1.05rem;color:var(--ink);word-wrap:break-word}
-.filebtn{position:relative;overflow:hidden}
-.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
-/* Spread on solved page */
-.spread{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
-.spread .polaroid{margin:8px 0;padding:7px 7px 8px;width:100%}
-.spread .polaroid:nth-child(2n){transform:rotate(2deg)} .spread .polaroid:nth-child(2n+1){transform:rotate(-2deg)}
-.spread figcaption{font-size:.85rem;margin-top:6px}
-.spread .stopname{font:600 .7rem/1.2 var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--stone);text-align:center;margin-top:4px}
-.reveal{font-family:var(--serif);font-size:1.08rem}
-.seal{width:84px;height:84px;margin:4px auto 8px;display:block}
-.times{border-collapse:collapse;width:100%;font-size:.95rem;margin:8px 0}
-.times th,.times td{text-align:left;padding:6px 4px;border-bottom:1px dashed var(--stone-light)}
-.banner{background:#fff3cd;border:1px solid #e0c36a;color:#5b4500;padding:8px 12px;border-radius:6px;font-size:.92rem;margin:10px auto;max-width:528px}
-.map{width:100%;height:auto;display:block;margin:10px 0;background:var(--lake-light);border-radius:8px}
-.footer-links{text-align:center;margin-top:22px}
-dialog{border:none;border-radius:12px;padding:20px;max-width:min(92vw,420px);box-shadow:0 10px 40px rgba(0,0,0,.3);color:var(--ink)}
-dialog::backdrop{background:rgba(20,30,40,.5)}
-.saved-preview{width:100%;border:1px solid var(--stone-light);margin-top:10px}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden;overflow-x:clip;background:var(--parchment)}
+body{margin:0;color:var(--charcoal);font:17px/1.6 var(--sans);min-height:100vh;overflow-x:hidden;overflow-x:clip;
+  background:var(--grain),radial-gradient(120% 80% at 50% 0%,#F8F4EB 0%,var(--parchment) 55%,#EDE5D5 100%);background-attachment:fixed}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.15;color:var(--forest-ink);margin:.2em 0 .45em;letter-spacing:-.005em}
+h1{font-size:2rem} h2{font-size:1.45rem} h3{font-size:1.15rem}
+p{margin:.45em 0 .85em}
+a{color:var(--forest)}
+em{font-family:var(--serif)}
+.wrap{max-width:580px;margin:0 auto;padding:10px 16px 56px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-/* Page-turn transition */
-.turn{animation:turn .55s cubic-bezier(.2,.7,.2,1) both;transform-origin:left center}
-@keyframes turn{from{opacity:0;transform:perspective(1200px) rotateY(22deg)}to{opacity:1;transform:none}}
-.pop{animation:pop .6s ease-out both}
-@keyframes pop{0%{transform:scale(.6) rotate(-10deg);opacity:0}70%{transform:scale(1.08) rotate(3deg);opacity:1}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
-@media (min-width:480px){h1{font-size:2.2rem}}
+.sr:focus{position:fixed;left:8px;top:8px;width:auto;height:auto;clip:auto;background:var(--paper);padding:8px 12px;z-index:9}
+:focus-visible{outline:3px solid var(--lake-dark);outline-offset:3px;border-radius:4px}
+.small{font-size:.92rem;color:var(--ink-soft)}
+.muted{color:var(--ink-soft)}
+.kicker{font:700 .74rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--brass-dark);margin:0 0 8px}
+.hand{font-family:var(--hand);font-weight:500}
+
+/* ---------- Buttons: letterpress labels that physically press down ---------- */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;min-width:44px;
+  padding:12px 20px;font:600 1.02rem/1.2 var(--sans);letter-spacing:.01em;border-radius:12px;cursor:pointer;text-decoration:none;
+  border:1.5px solid var(--forest-dark);background:var(--forest);color:#F7F2E7;
+  box-shadow:0 3px 0 var(--forest-dark),0 6px 12px -6px rgba(36,54,43,.6);
+  transition:transform .07s steps(1),box-shadow .07s steps(1);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active,.btn.pressed{transform:translateY(3px);box-shadow:0 0 0 var(--forest-dark),0 2px 4px -2px rgba(36,54,43,.5)}
+.btn.secondary{background:var(--paper);color:var(--forest-ink);border-color:#B9AE98;box-shadow:0 3px 0 #CFC4AF,0 6px 12px -8px rgba(41,43,40,.35)}
+.btn.secondary:active,.btn.secondary.pressed{box-shadow:0 0 0 #CFC4AF}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--forest-ink);text-decoration:underline;text-underline-offset:4px;padding:10px 8px;min-height:44px;font-weight:600}
+.btn.ghost:active{transform:translateY(1px)}
+.btn.block{width:100%}
+.btn[disabled]{background:#A9B0A6;border-color:#959C92;box-shadow:0 3px 0 #8E958B;color:#F4F1EA;cursor:not-allowed;transform:none}
+.btn.secondary[disabled]{background:var(--limestone-2);color:#77796f;border-color:#CFC4AF;box-shadow:none}
+.btn .arrow{font-family:var(--serif);font-size:1.15em;line-height:1}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.row>.btn{flex:1 1 140px}
+
+/* ---------- Form controls ---------- */
+label{font-weight:600}
+input[type=text]{width:100%;min-height:52px;font:1.08rem var(--sans);padding:12px 14px;color:var(--charcoal);
+  background:#FFFDF8;border:1.5px solid #A39A88;border-bottom-width:3px;border-radius:10px}
+input[type=text]::placeholder{color:#8A8475}
+input[type=text]:focus{border-color:var(--forest);outline:none;box-shadow:0 0 0 3px rgba(52,75,60,.18)}
+.check{display:flex;gap:14px;align-items:flex-start;padding:14px;border:1.5px dashed #BDB29C;border-radius:10px;margin:16px 0;font-weight:600;cursor:pointer;background:rgba(255,253,248,.6)}
+.check input,.toggle input{width:26px;height:26px;flex:0 0 26px;margin:1px 0 0;accent-color:var(--forest)}
+.toggle{display:flex;gap:14px;align-items:flex-start;padding:12px 14px;border-radius:10px;margin:14px 0;cursor:pointer;font-weight:600;background:var(--limestone-2)}
+.feedback{min-height:1.5em;font-weight:600;margin:8px 0}
+.feedback.bad{color:var(--oxblood)} .feedback.good{color:var(--forest)}
+
+/* ---------- Route progress (top bar) ---------- */
+.routebar{position:sticky;top:0;z-index:5;background:rgba(245,240,230,.94);border-bottom:1px solid rgba(173,145,96,.35);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.routebar-in{max-width:580px;margin:0 auto;padding:6px 12px 6px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rb-label{min-width:0;line-height:1.15}
+.rb-label b{display:block;font:600 1.02rem/1.2 var(--serif);color:var(--forest-ink);white-space:nowrap}
+.rb-label span{font-size:.8rem;color:var(--ink-soft);white-space:nowrap}
+.route{position:relative;display:flex;align-items:center;gap:8px;margin:0;padding:0;list-style:none}
+.route::before{content:"";position:absolute;left:22px;right:22px;top:50%;border-top:2px dashed #BDB29C}
+.route .seg{position:absolute;top:calc(50% - 1px);height:2px;left:22px;background:var(--forest);transform-origin:left;width:var(--fill,0px);transition:width .4s steps(4)}
+.stn{position:relative;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;cursor:pointer;color:inherit}
+.stn[aria-disabled=true]{cursor:default}
+.stn .disc{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:2px dashed #B3A891;color:#8F8775}
+.stn svg{width:20px;height:20px}
+.stn.done .disc{background:var(--forest);border:2px solid var(--forest-dark);color:#F2EBDC}
+.stn.cur .disc{border:2px solid var(--forest);color:var(--forest);background:#FFFDF8;box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--brass)}
+.stn.done.cur .disc{box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--brass)}
+.stn .tick{position:absolute;right:0;bottom:0;width:16px;height:16px;border-radius:50%;background:var(--brass);color:#fff;display:grid;place-items:center;border:1.5px solid var(--paper)}
+.stn .tick svg{width:10px;height:10px}
+.stn.ink .disc{animation:ink-fill .5s both}
+.stn.ink .tick{animation:stamp-small .45s .25s both}
+
+/* ---------- Journal pages ---------- */
+.page{position:relative;margin:18px 0 0;padding:26px 20px 26px 26px;background:var(--fibres),var(--grain),var(--paper);border-radius:3px 6px 6px 3px;
+  box-shadow:var(--shadow-paper);isolation:isolate}
+.page::before{content:"";position:absolute;inset:0 auto 0 0;width:14px;border-radius:3px 0 0 3px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(41,43,40,.13),rgba(41,43,40,.03) 60%,transparent)}
+.page::after{content:"";position:absolute;z-index:-1;inset:6px -4px -5px 8px;background:#EFE8DA;border-radius:3px 6px 6px 3px;
+  box-shadow:0 1px 2px rgba(41,43,40,.15);transform:rotate(.6deg)}
+.page.v1::after{transform:rotate(-.5deg);inset:5px -3px -6px 6px}
+.page.v2::after{transform:rotate(.9deg)}
+.page.v3::after{transform:rotate(-.8deg);inset:8px -5px -4px 10px}
+.tape{position:absolute;width:96px;height:26px;background:var(--tape);z-index:2;pointer-events:none;
+  box-shadow:0 1px 1px rgba(41,43,40,.1);
+  clip-path:polygon(0 0,100% 0,96% 16%,100% 33%,96% 50%,100% 66%,96% 83%,100% 100%,0 100%,4% 83%,0 66%,4% 50%,0 33%,4% 16%)}
+.tape.b{background:var(--tape-2)}
+.corner{position:absolute;width:30px;height:30px;z-index:2;pointer-events:none;background:linear-gradient(135deg,#3D3A33 50%,transparent 50%)}
+.corner.tr{transform:rotate(90deg)} .corner.br{transform:rotate(180deg)} .corner.bl{transform:rotate(270deg)}
+.rule{border:0;height:10px;margin:18px 0;background:
+  radial-gradient(circle,var(--brass) 2.2px,transparent 2.6px) center/10px 10px no-repeat,
+  linear-gradient(var(--brass),var(--brass)) left center/calc(50% - 12px) 1px no-repeat,
+  linear-gradient(var(--brass),var(--brass)) right center/calc(50% - 12px) 1px no-repeat;opacity:.75}
+
+/* ---------- Cover (welcome) ---------- */
+.cover{position:relative;margin:14px 0 0;padding:34px 22px 30px;border-radius:6px 12px 12px 6px;color:#E9DCC0;text-align:center;
+  background:var(--grain),radial-gradient(130% 90% at 30% 10%,#3E5848 0%,var(--forest) 45%,#2A3F31 100%);
+  box-shadow:inset 10px 0 14px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.04),0 2px 2px rgba(0,0,0,.15),0 18px 34px -14px rgba(20,30,24,.55);
+  transform-origin:left center;isolation:isolate}
+.cover::before{content:"";position:absolute;inset:12px 12px 12px 20px;border:1.5px solid rgba(205,182,136,.55);border-radius:4px;pointer-events:none;
+  box-shadow:inset 0 0 0 4px rgba(42,63,49,.0),inset 0 0 0 5px rgba(205,182,136,.25)}
+.cover::after{content:"";position:absolute;top:-2px;bottom:-2px;right:34px;width:12px;background:linear-gradient(90deg,#1E2C23,#2D4134 40%,#1E2C23);
+  box-shadow:0 0 3px rgba(0,0,0,.35);border-radius:2px;opacity:.9}
+.cover-kicker{font:600 .72rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--brass-light);margin:4px 0 18px}
+.cover-title{margin:0;color:#E7D3A6;font-family:var(--serif);text-shadow:0 1px 0 rgba(0,0,0,.35),0 -1px 0 rgba(255,240,200,.12)}
+.cover-title .t1,.cover-title .t3{display:block;font:600 .95rem/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--brass-light);margin-right:-.42em}
+.cover-title .t2{display:block;font-weight:600;font-size:clamp(2.5rem,12.5vw,3.5rem);line-height:1;margin:.12em 0 .1em;letter-spacing:-.01em}
+.cover-art{display:block;width:min(100%,300px);height:auto;margin:16px auto 10px;color:var(--brass-light)}
+.cover-sub{font:italic 400 1.08rem/1.3 var(--serif);color:#E2D2B0;margin:6px 0 4px}
+.cover-foot{font:500 .7rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:rgba(205,182,136,.8);margin:16px 0 0}
+.cover.opening{animation:cover-open .62s steps(1) forwards}
+.bookplate{text-align:left}
+.bookplate h2{font-size:1.3rem;margin-top:0}
+.bookplate ul{padding-left:0;list-style:none;margin:8px 0 12px}
+.bookplate li{position:relative;padding-left:28px;margin:.55em 0}
+.bookplate li::before{content:"";position:absolute;left:4px;top:.62em;width:10px;height:10px;border:1.5px solid var(--brass);transform:rotate(45deg)}
+
+/* ---------- Story / intro ---------- */
+.dropcap::first-letter{float:left;font:600 3.3rem/.8 var(--serif);color:var(--forest);margin:.08em .08em 0 0}
+.letter{position:relative;margin:22px 4px 22px;padding:22px 20px 20px;background:var(--grain),#F3EBD9;transform:rotate(-1.2deg);
+  box-shadow:0 1px 2px rgba(41,43,40,.15),0 10px 18px -10px rgba(41,43,40,.35);
+  clip-path:polygon(0 2%,6% 0,14% 1.5%,23% .2%,31% 1.4%,42% .3%,55% 1.6%,63% .2%,74% 1.2%,86% 0,94% 1.5%,100% .4%,100% 98%,93% 100%,82% 98.6%,71% 99.8%,60% 98.4%,47% 99.7%,36% 98.5%,24% 99.9%,13% 98.7%,4% 100%,0 98.5%)}
+.letter p{font:500 1.42rem/1.35 var(--hand);color:#2E3A33;margin:0;white-space:pre-line}
+.letter .sig{display:block;text-align:right;margin-top:8px}
+.letter .wax{position:absolute;left:16px;bottom:10px;width:44px;height:44px}
+
+/* ---------- Chapter (clue) pages ---------- */
+.chap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:6px}
+.chap-no{display:block;font:700 .74rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--brass-dark)}
+.chap-num{display:block;font:600 2.7rem/1 var(--serif);color:var(--forest-ink);margin-top:4px}
+.postmark{width:84px;height:84px;flex:0 0 84px;color:var(--lake-dark);opacity:.8;transform:rotate(-12deg);margin:-6px -4px 0 0}
+.annot{font:500 1.28rem/1.2 var(--hand);color:var(--lake-dark);margin:2px 0 12px;transform:rotate(-1.5deg);transform-origin:left}
+.clue-card{position:relative;margin:8px 0 18px;padding:20px 22px 20px 20px;background:#FFFDF7;border:1px solid #E5DCCB;border-radius:2px;
+  box-shadow:0 1px 1px rgba(41,43,40,.07),0 8px 16px -10px rgba(41,43,40,.35);transform:rotate(var(--crot,-.6deg))}
+.clue-card::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 31px,rgba(98,127,145,.16) 31px 32px);background-position:0 18px;pointer-events:none}
+.clue-card::after{content:"";position:absolute;right:-1px;top:-1px;width:26px;height:26px;background:linear-gradient(225deg,var(--paper) 50%,#E9E0CE 50%,#DDD2BD);box-shadow:-2px 2px 3px rgba(41,43,40,.12)}
+.clue-text{position:relative;margin:0;font:500 1.14rem/32px var(--sans);color:var(--charcoal);white-space:pre-line}
+.clue-label{position:relative;display:block;font:500 1.15rem/1 var(--hand);color:var(--brass-dark);margin-bottom:6px}
+.unlock{margin-top:6px}
+.unlock label{display:block;font:600 1.02rem/1.3 var(--sans);margin-bottom:6px}
+.hints{margin:10px 0 0}
+.note{position:relative;margin:16px 6px 6px;padding:16px 18px 14px;background:var(--grain),#FBF3DC;border-radius:2px;transform:rotate(var(--nrot,1.1deg));
+  box-shadow:0 1px 2px rgba(41,43,40,.14),0 8px 14px -8px rgba(41,43,40,.3);transform-origin:top center}
+.note::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,rgba(41,43,40,.08) 20%,rgba(255,255,255,.6) 50%,rgba(41,43,40,.08) 80%,transparent);pointer-events:none}
+.note .tape{top:-12px;left:calc(50% - 40px);width:80px;transform:rotate(-4deg)}
+.note .note-k{display:block;font:500 1.1rem/1 var(--hand);color:var(--brass-dark);margin-bottom:4px}
+.note p{margin:0;font-size:1.02rem;line-height:1.5}
+.note.opening{animation:unfold .7s steps(1) both}
+.note.opening .note-body{animation:ink-in .7s steps(1) both}
+.nudge{animation:nudge .5s steps(1)}
+
+/* ---------- Scrapbook (unlocked) pages ---------- */
+.stamp{position:absolute;right:8px;top:12px;width:88px;height:88px;color:var(--forest);opacity:.82;transform:rotate(var(--srot,-9deg));pointer-events:none;mix-blend-mode:multiply;z-index:3}
+.stamp.skipped{color:var(--lake-dark)}
+.stamp.pressing{animation:stamp-press .55s steps(1) both}
+.page.thud{animation:page-thud .5s .18s steps(1)}
+.place{padding-right:88px;min-height:86px}
+.place h1{font-size:clamp(1.45rem,6.4vw,1.85rem);margin:2px 0 4px;overflow-wrap:anywhere}
+.place .addr{font:600 .78rem/1.35 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:0}
+.polaroid{--rot:-2deg;position:relative;width:min(100%,330px);margin:26px auto 10px;padding:12px 12px 0;background:#FFFEFA;
+  transform:rotate(var(--rot));box-shadow:0 1px 1px rgba(41,43,40,.12),0 4px 8px rgba(41,43,40,.1),0 18px 26px -16px rgba(41,43,40,.45)}
+.polaroid .photo{aspect-ratio:1/1;position:relative;overflow:hidden;background:#E4DDCF;display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(41,43,40,.08)}
+.polaroid .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.polaroid .photo::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.08),transparent 40%,rgba(0,0,0,.05))}
+.polaroid figcaption{font:500 1.5rem/1.1 var(--hand);color:#2A2C28;text-align:center;min-height:2.3em;padding:10px 6px 14px;word-wrap:break-word;display:grid;place-items:center}
+.polaroid .empty{display:grid;justify-items:center;gap:6px;color:#8A8270;text-align:center;padding:16px}
+.polaroid .empty svg{width:62%;height:auto;opacity:.45}
+.polaroid .empty span{font:500 1.25rem/1.1 var(--hand)}
+.polaroid .tape{top:-13px;left:calc(50% - 48px);transform:rotate(-3deg)}
+.polaroid.v1 .tape{left:auto;right:-26px;top:14px;transform:rotate(42deg)}
+.polaroid.v1 .tape.b{left:-26px;right:auto;top:auto;bottom:40px;transform:rotate(38deg)}
+.polaroid.v3 .tape{left:-18px;top:-6px;transform:rotate(-38deg);width:80px}
+.polaroid.v3 .tape.b{left:auto;right:-18px;transform:rotate(38deg)}
+.polaroid.v2 .corner.tl{left:4px;top:4px} .polaroid.v2 .corner.tr{right:4px;top:4px} .polaroid.v2 .corner.bl{left:4px;bottom:4px} .polaroid.v2 .corner.br{right:4px;bottom:4px}
+.polaroid.placing{animation:place-photo .8s steps(1) both}
+.polaroid.placing .tape,.polaroid.placing .corner{animation:tape-on .4s .62s steps(1) both}
+.photo-actions{display:flex;gap:12px;margin:16px 0 4px}
+.photo-actions>*{flex:1 1 0;padding-left:10px;padding-right:10px;white-space:nowrap}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;width:100%}
+.filebtn:focus-within{outline:3px solid var(--lake-dark);outline-offset:3px}
+.fieldnote{position:relative;margin:22px 0 6px;padding:18px 18px 14px 20px;background:var(--grain),#EEF1EC;border-radius:3px;border-left:4px solid var(--lake);transform:rotate(var(--frot,.4deg))}
+.fieldnote h3{font:600 1.12rem/1.2 var(--serif);margin:0 0 6px;color:var(--forest-ink)}
+.fieldnote .tag{position:absolute;right:14px;top:-11px;font:700 .68rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;background:var(--brass);color:#FFF9EC;padding:6px 9px 5px;border-radius:2px;transform:rotate(2deg)}
+.fieldnote p{margin:.35em 0;font-size:1rem}
+.cap-field{margin-top:18px}
+.cap-field .small{margin:6px 0 0}
+.next-row{margin-top:22px}
+
+/* ---------- Footer links ---------- */
+.footer-links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:26px}
+
+/* ---------- Final spread ---------- */
+.seal{display:block;width:96px;height:96px;margin:0 auto 6px}
+.finale{text-align:center}
+.finale .reveal{font:400 1.12rem/1.6 var(--serif);text-align:left}
+.finale .reveal p:first-child::first-letter{float:left;font:600 3.2rem/.8 var(--serif);color:var(--forest);margin:.08em .08em 0 0}
+.spread{display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;margin:24px -4px 18px;padding:18px 10px 8px;background:var(--grain),#EFE7D6;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(173,145,96,.25)}
+.spread .polaroid{margin:0;padding:7px 7px 0;width:100%}
+.spread .polaroid figcaption{font-size:1.12rem;min-height:2.1em;padding:6px 2px 4px}
+.spread .polaroid .tape{width:60px;height:18px;left:calc(50% - 30px);top:-9px}
+.spread .stopname{font:700 .62rem/1.3 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--brass-dark);text-align:center;padding:0 2px 6px}
+.spread .fact{font:500 .98rem/1.15 var(--hand);color:var(--lake-dark);text-align:center;padding:0 4px 10px;margin:0}
+.spread .polaroid.arrive{animation:arrive .7s steps(1) both;animation-delay:var(--d,0s)}
+.invite{font:500 1.5rem/1.25 var(--hand);color:var(--forest-ink);text-align:center;margin:8px 0 4px}
+.section{margin-top:30px;text-align:left}
+.section h2{font-size:1.3rem;margin-bottom:4px}
+.ledger{border-collapse:collapse;width:100%;font-size:.95rem;margin:10px 0;font-variant-numeric:tabular-nums;background:repeating-linear-gradient(transparent 0 39px,rgba(98,127,145,.18) 39px 40px)}
+.ledger th,.ledger td{text-align:left;padding:9px 6px;border-bottom:1px solid rgba(98,127,145,.22);vertical-align:top}
+.ledger thead th{font:700 .7rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--brass-dark);border-bottom:1.5px solid var(--brass)}
+.ledger td:first-child{font-family:var(--serif);font-weight:600;color:var(--forest-ink)}
+.saved-preview{width:100%;border:1px solid var(--limestone);margin-top:10px;border-radius:2px}
+details summary{min-height:44px;cursor:pointer;font-weight:600;padding:10px 0;color:var(--forest-ink)}
+
+/* ---------- Map ---------- */
+.map{width:100%;height:auto;display:block;margin:12px 0;border-radius:4px;box-shadow:0 1px 2px rgba(41,43,40,.12),0 8px 16px -10px rgba(41,43,40,.35)}
+
+/* ---------- Banner + dialog ---------- */
+.banner{background:#F6EBCB;border:1px solid var(--brass);color:#4E3F1F;padding:10px 14px;border-radius:6px;font-size:.92rem;margin:10px auto;max-width:548px}
+dialog{border:none;border-radius:6px;padding:24px 22px;max-width:min(92vw,420px);color:var(--charcoal);background:var(--grain),var(--paper);box-shadow:0 24px 60px -10px rgba(20,30,24,.5)}
+dialog::backdrop{background:rgba(36,54,43,.5)}
+dialog h2{margin-top:0}
+
+/* =====================================================================
+   STOP-MOTION ANIMATION
+   Every keyframe below is a held "frame" (steps(1)), roughly 12 fps,
+   with small hand-placed irregularities: objects get placed and settle,
+   never glide. All of it is switched off for prefers-reduced-motion.
+   ===================================================================== */
+.turn-fwd{animation:turn-fwd .56s steps(1) both;transform-origin:left center}
+.turn-back{animation:turn-back .56s steps(1) both;transform-origin:right center}
+@keyframes turn-fwd{
+  0%{opacity:0;transform:perspective(1600px) rotateY(38deg) translateY(-4px)}
+  14%{opacity:.55;transform:perspective(1600px) rotateY(27deg) translateY(-3px)}
+  28%{opacity:.85;transform:perspective(1600px) rotateY(16deg) translateY(-1px) rotate(.3deg)}
+  42%{opacity:1;transform:perspective(1600px) rotateY(7deg) rotate(.2deg)}
+  57%{transform:perspective(1600px) rotateY(1.5deg) translateY(1px)}
+  71%{transform:perspective(1600px) rotateY(-.8deg) translateY(1px) rotate(-.15deg)}
+  86%{transform:perspective(1600px) rotateY(.3deg)}
+  100%{opacity:1;transform:none}}
+@keyframes turn-back{
+  0%{opacity:0;transform:perspective(1600px) rotateY(-38deg)}
+  16%{opacity:.6;transform:perspective(1600px) rotateY(-24deg) translateY(-2px)}
+  33%{opacity:1;transform:perspective(1600px) rotateY(-12deg) rotate(-.2deg)}
+  50%{transform:perspective(1600px) rotateY(-4deg)}
+  66%{transform:perspective(1600px) rotateY(.8deg) translateY(1px)}
+  83%{transform:perspective(1600px) rotateY(-.3deg)}
+  100%{opacity:1;transform:none}}
+/* children of a fresh page settle one after another, like pieces laid down */
+.settle>*{animation:settle .42s steps(1) both;animation-delay:calc(var(--i,0) * 55ms + 120ms)}
+@keyframes settle{
+  0%{opacity:0;transform:translate(0,7px) rotate(-.5deg)}
+  25%{opacity:.7;transform:translate(1px,3px) rotate(.3deg)}
+  50%{opacity:1;transform:translate(0,-1px) rotate(-.15deg)}
+  75%{transform:translate(0,.5px)}
+  100%{opacity:1;transform:none}}
+@keyframes cover-open{
+  0%{transform:perspective(1400px) rotateY(0)}
+  12%{transform:perspective(1400px) rotateY(-4deg) translateX(1px)}
+  25%{transform:perspective(1400px) rotateY(-15deg)}
+  40%{transform:perspective(1400px) rotateY(-33deg)}
+  55%{transform:perspective(1400px) rotateY(-55deg);opacity:1}
+  70%{transform:perspective(1400px) rotateY(-74deg);opacity:.85}
+  85%{transform:perspective(1400px) rotateY(-86deg);opacity:.5}
+  100%{transform:perspective(1400px) rotateY(-90deg);opacity:0}}
+@keyframes stamp-press{
+  0%{opacity:0;transform:translate(-6px,-10px) scale(1.55) rotate(calc(var(--srot,-9deg) - 10deg))}
+  18%{opacity:.25;transform:translate(-4px,-6px) scale(1.32) rotate(calc(var(--srot,-9deg) - 6deg))}
+  36%{opacity:.9;transform:translate(-1px,-1px) scale(1.04) rotate(calc(var(--srot,-9deg) - 1.5deg))}
+  50%{opacity:.95;transform:scale(.95) rotate(calc(var(--srot,-9deg) + .5deg))}
+  68%{opacity:.88;transform:scale(1.015) rotate(var(--srot,-9deg))}
+  100%{opacity:.82;transform:scale(1) rotate(var(--srot,-9deg))}}
+@keyframes page-thud{
+  0%{transform:none} 30%{transform:translateY(2px) rotate(.12deg)} 60%{transform:translateY(-.5px)} 100%{transform:none}}
+@keyframes place-photo{
+  0%{opacity:0;transform:translate(18px,-54px) rotate(calc(var(--rot) - 9deg)) scale(1.07);box-shadow:0 2px 2px rgba(41,43,40,.05),0 40px 50px -18px rgba(41,43,40,.32)}
+  12%{opacity:1;transform:translate(14px,-40px) rotate(calc(var(--rot) - 7deg)) scale(1.06);box-shadow:0 2px 2px rgba(41,43,40,.06),0 36px 46px -18px rgba(41,43,40,.34)}
+  25%{transform:translate(9px,-24px) rotate(calc(var(--rot) - 4.5deg)) scale(1.04);box-shadow:0 2px 3px rgba(41,43,40,.08),0 28px 38px -18px rgba(41,43,40,.38)}
+  37%{transform:translate(4px,-10px) rotate(calc(var(--rot) - 2deg)) scale(1.02)}
+  50%{transform:translate(1px,-2px) rotate(calc(var(--rot) + .6deg)) scale(1.005);box-shadow:0 1px 1px rgba(41,43,40,.12),0 8px 14px -8px rgba(41,43,40,.45)}
+  62%{transform:translate(-1px,1px) rotate(calc(var(--rot) + 1.1deg))}
+  75%{transform:translate(0,0) rotate(calc(var(--rot) - .3deg))}
+  87%{transform:rotate(calc(var(--rot) + .2deg))}
+  100%{opacity:1;transform:rotate(var(--rot))}}
+@keyframes tape-on{0%{opacity:0;scale:.3 1}34%{opacity:1;scale:.62 1}67%{scale:.94 1}100%{opacity:1;scale:1 1}}
+@keyframes unfold{
+  0%{opacity:0;transform:perspective(700px) rotateX(-88deg) rotate(var(--nrot,1.1deg)) scaleY(.4)}
+  15%{opacity:1;transform:perspective(700px) rotateX(-70deg) rotate(var(--nrot,1.1deg)) scaleY(.55)}
+  30%{transform:perspective(700px) rotateX(-45deg) rotate(var(--nrot,1.1deg)) scaleY(.75)}
+  45%{transform:perspective(700px) rotateX(-20deg) rotate(var(--nrot,1.1deg)) scaleY(.92)}
+  60%{transform:perspective(700px) rotateX(-4deg) rotate(var(--nrot,1.1deg))}
+  75%{transform:perspective(700px) rotateX(3deg) rotate(calc(var(--nrot,1.1deg) - .4deg))}
+  100%{opacity:1;transform:rotate(var(--nrot,1.1deg))}}
+@keyframes ink-in{0%,40%{opacity:0}55%{opacity:.5}70%{opacity:.85}100%{opacity:1}}
+@keyframes nudge{0%{transform:rotate(var(--crot,-.6deg))}25%{transform:translateY(-2px) rotate(calc(var(--crot,-.6deg) - .4deg))}50%{transform:translateY(1px) rotate(calc(var(--crot,-.6deg) + .2deg))}100%{transform:rotate(var(--crot,-.6deg))}}
+@keyframes ink-fill{0%{transform:scale(.7)}25%{transform:scale(1.12)}50%{transform:scale(.96)}75%{transform:scale(1.03)}100%{transform:none}}
+@keyframes stamp-small{0%{opacity:0;transform:scale(1.8) rotate(-20deg)}40%{opacity:1;transform:scale(.9) rotate(4deg)}70%{transform:scale(1.05)}100%{opacity:1;transform:none}}
+@keyframes arrive{
+  0%{opacity:0;transform:translate(var(--fx,0),var(--fy,-30px)) rotate(calc(var(--rot) + var(--fr,10deg))) scale(1.06)}
+  20%{opacity:1;transform:translate(calc(var(--fx,0) * .6),calc(var(--fy,-30px) * .6)) rotate(calc(var(--rot) + var(--fr,10deg) * .6)) scale(1.04)}
+  40%{transform:translate(calc(var(--fx,0) * .25),calc(var(--fy,-30px) * .25)) rotate(calc(var(--rot) + var(--fr,10deg) * .25)) scale(1.015)}
+  60%{transform:translate(0,1px) rotate(calc(var(--rot) - var(--fr,10deg) * .08))}
+  80%{transform:rotate(calc(var(--rot) + var(--fr,10deg) * .03))}
+  100%{opacity:1;transform:rotate(var(--rot))}}
+.shake{animation:shake .36s steps(1)}
+@keyframes shake{0%{transform:none}20%{transform:translateX(-5px) rotate(-.3deg)}40%{transform:translateX(4px) rotate(.2deg)}60%{transform:translateX(-2px)}80%{transform:translateX(1px)}100%{transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media (min-width:640px){
+  body{font-size:18px}
+  .wrap{padding-top:18px}
+  .page{padding:34px 34px 34px 40px}
+  .cover{padding:46px 40px 40px}
+  h1{font-size:2.3rem}
+}
 </style>
 </head>
 <body>
+
 <a class="sr" href="#app">Skip to content</a>
+<!-- Shared SVG: rough-ink filter for stamps, and the four landmark glyphs used in the route bar. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="ink" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="3" result="m"/>
+      <feColorMatrix in="m" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.7 1.6" result="mask"/>
+      <feComposite in="d" in2="mask" operator="in"/>
+    </filter>
+    <symbol id="g-market" viewBox="0 0 24 24"><path d="M3 9.5h18L19 4.5H5zM3 9.5q1.5 2 3 0 1.5 2 3 0 1.5 2 3 0 1.5 2 3 0 1.5 2 3 0 1.5 2 3 0M5 11v8.5M19 11v8.5M3 19.5h18M8.5 15.5h7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-dome" viewBox="0 0 24 24"><path d="M3.5 20.5h17M5 20.5v-7h14v7M7.5 13.5a4.5 4.5 0 0 1 9 0M12 9V5.5M10.5 5.5h3M9 20.5v-4M12 20.5v-4M15 20.5v-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-arch" viewBox="0 0 24 24"><path d="M4.5 20.5V11a7.5 7.5 0 0 1 15 0v9.5h-3.5V11a4 4 0 0 0-8 0v9.5zM2.5 20.5h19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-tower" viewBox="0 0 24 24"><path d="M7.5 18V9.5h9V18M6.5 9.5h11v-3h-11zM9 6.5V4h6v2.5M11 13h2M2.5 20.5q2.4-1.6 4.8 0t4.8 0 4.8 0 4.8 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-tick" viewBox="0 0 12 12"><path d="M2.5 6.3l2.2 2.2 4.8-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
 <div id="storageNote" class="banner" hidden role="status">Heads up: your browser isn't letting this page save (private browsing?). Everything still works, but refreshing the page will lose your progress and photos.</div>
-<header class="topbar" id="topbar" hidden>
-  <span class="brand" aria-hidden="true">The Limestone Ledger</span>
-  <nav class="progress" id="progress" aria-label="Progress"></nav>
+<header class="routebar" id="topbar" hidden>
+  <div class="routebar-in">
+    <div class="rb-label" id="rbLabel"></div>
+    <nav aria-label="Your route: progress through the four stops"><ol class="route" id="progress"></ol></nav>
+  </div>
 </header>
 <main id="app" class="wrap" tabindex="-1"></main>
 <dialog id="confirmReset" aria-labelledby="resetTitle">
@@ -124,7 +390,7 @@ dialog::backdrop{background:rgba(20,30,40,.5)}
   <p>This erases your progress, photos and captions from this phone. It can't be undone. (If you want to keep your scrapbook, save the image first.)</p>
   <div class="row">
     <button class="btn secondary" id="resetCancel" type="button">Keep my scrapbook</button>
-    <button class="btn" id="resetOk" type="button" style="background:var(--red);border-color:var(--red)">Erase everything</button>
+    <button class="btn" id="resetOk" type="button" style="background:var(--oxblood);border-color:#5E2A21;box-shadow:0 3px 0 #5E2A21">Erase everything</button>
   </div>
 </dialog>
 <script>
@@ -174,6 +440,7 @@ const CONFIG = {
       photoPrompt: "Snap the square: stalls, the rink, or the back of City Hall.",
       captionPlaceholder: "e.g. Best apples in Ontario?",
       illustration: "market",
+      keepsake: "A public market here since 1801",   // short line for the final spread; keep it to verified facts
     },
     {
       name: "Kingston City Hall",
@@ -189,6 +456,7 @@ const CONFIG = {
       photoPrompt: "Fit the whole dome in your shot (step back across the street).",
       captionPlaceholder: "e.g. Built for a capital",
       illustration: "cityhall",
+      keepsake: "Built for a capital, completed in 1844",   // short line for the final spread; keep it to verified facts
     },
     {
       name: "Confederation Park",
@@ -204,6 +472,7 @@ const CONFIG = {
       photoPrompt: "Line up City Hall inside the arch, or say hi to the locomotive.",
       captionPlaceholder: "e.g. Framed it perfectly",
       illustration: "park",
+      keepsake: "Opened in 1967 for the centennial",   // short line for the final spread; keep it to verified facts
     },
     {
       name: "Shoal Tower",
@@ -219,6 +488,7 @@ const CONFIG = {
       photoPrompt: "Catch the tower out on the water.",
       captionPlaceholder: "e.g. Still on guard",
       illustration: "tower",
+      keepsake: "A Martello tower from the 1840s",   // short line for the final spread; keep it to verified facts
     },
   ],
 
@@ -512,8 +782,23 @@ function stopsDone() { return state.stops.filter(s => s.unlocked).length; }
    Screens
    --------------------------------------------------------------------- */
 const app = document.getElementById("app");
+const ROMAN = ["I", "II", "III", "IV", "V", "VI"];
+const GLYPH = { market: "g-market", cityhall: "g-dome", park: "g-arch", tower: "g-tower" };
+const REDUCED = (() => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } })();
+// Small per-page differences so each page looks individually assembled.
+const DECOR = [
+  { rot: "-2.2deg", srot: "-9deg", crot: "-.6deg", nrot: "1.2deg", frot: ".4deg", annot: "His first clue, in careful copperplate:" },
+  { rot: "1.8deg", srot: "7deg", crot: ".5deg", nrot: "-1deg", frot: "-.5deg", annot: "The second, written in a hurry:" },
+  { rot: "-1.2deg", srot: "-14deg", crot: "-.9deg", nrot: ".8deg", frot: ".3deg", annot: "The third, slightly smudged:" },
+  { rot: "2.4deg", srot: "5deg", crot: ".7deg", nrot: "-1.4deg", frot: "-.3deg", annot: "The last, squeezed onto the back page:" },
+];
+const ORDER = s => ({ consent: 0, intro: 1, stop: 2 + state.stop, solved: 99 }[s] || 0);
+let justUnlocked = -1;   // stop index that was unlocked a moment ago (drives the stamp + ink animations)
+
+function hintsUsed(s) { return s.hints || (s.hint ? 1 : 0); }
 
 function go(screen, stop) {
+  const before = ORDER(state.screen);
   state.screen = screen;
   if (typeof stop === "number") state.stop = stop;
   if (screen === "stop") {
@@ -521,47 +806,79 @@ function go(screen, stop) {
     if (!s.opened) s.opened = Date.now();
   }
   saveState();
-  render(true);
+  render(ORDER(screen) >= before ? "fwd" : "back");
 }
 
 function renderProgress() {
-  const bar = $("#topbar"), nav = $("#progress");
+  const bar = $("#topbar"), nav = $("#progress"), lab = $("#rbLabel");
   bar.hidden = state.screen === "consent";
-  nav.innerHTML = CONFIG.stops.map((st, i) => {
-    const s = state.stops[i];
-    const reachable = s.unlocked || s.opened;
-    const cls = "dot" + (s.unlocked ? " done" : "") + (state.screen === "stop" && state.stop === i ? " cur" : "");
-    const label = `Stop ${i + 1}: ${s.unlocked ? esc(st.name) + " (done)" : "not yet unlocked"}`;
-    return reachable
-      ? `<button type="button" class="${cls}" style="padding:0;min-width:0;cursor:pointer;width:22px;height:22px;border-width:3px" data-goto="${i}" aria-label="${label}"></button>`
-      : `<span class="${cls}" style="width:22px;height:22px;border-width:3px" role="img" aria-label="${label}"></span>`;
-  }).join("");
-  nav.querySelectorAll("[data-goto]").forEach(b => b.onclick = () => go("stop", +b.dataset.goto));
+  const found = stopsDone();
+  const head = state.screen === "stop" ? `Chapter ${ROMAN[state.stop]}` : state.screen === "solved" ? "The last page" : "Prologue";
+  lab.innerHTML = `<b>${head}</b><span>${found} of ${N} pages found</span>`;
+  let lastDone = -1; state.stops.forEach((s, i) => { if (s.unlocked) lastDone = i; });
+  nav.innerHTML = `<span class="seg" style="--fill:${Math.max(0, lastDone) * 52}px" aria-hidden="true"></span>` +
+    CONFIG.stops.map((st, i) => {
+      const s = state.stops[i];
+      const reachable = s.unlocked || s.opened;
+      const cur = state.screen === "stop" && state.stop === i;
+      const cls = "stn" + (s.unlocked ? " done" : "") + (cur ? " cur" : "") + (justUnlocked === i ? " ink" : "");
+      const label = `Chapter ${ROMAN[i]}: ${s.unlocked ? esc(st.name) + ", found" : reachable ? "in progress" : "not yet reached"}${cur ? " (you are here)" : ""}`;
+      const inner = `<span class="disc"><svg aria-hidden="true"><use href="#${GLYPH[st.illustration] || "g-dome"}"/></svg></span>${s.unlocked ? `<span class="tick" aria-hidden="true"><svg><use href="#g-tick"/></svg></span>` : ""}`;
+      return `<li>${reachable
+        ? `<button type="button" class="${cls}" data-goto="${i}" aria-label="${label}" ${cur ? 'aria-current="step"' : ""}>${inner}</button>`
+        : `<span class="${cls}" role="img" aria-label="${label}" aria-disabled="true">${inner}</span>`}</li>`;
+    }).join("");
+  nav.querySelectorAll("[data-goto]").forEach(b => b.onclick = () => { if (+b.dataset.goto !== state.stop || state.screen !== "stop") go("stop", +b.dataset.goto); });
 }
 
-function render(animate) {
+function render(dir) {
   renderProgress();
   const fn = { consent: renderConsent, intro: renderIntro, stop: renderStop, solved: renderSolved }[state.screen] || renderConsent;
   fn();
-  if (animate) {
-    app.classList.remove("turn"); void app.offsetWidth; app.classList.add("turn");
+  // number the direct children of the page so they settle one after another
+  app.querySelectorAll(".settle").forEach(p => [...p.children].forEach((c, k) => c.style.setProperty("--i", Math.min(k, 6))));
+  if (dir) {
+    app.classList.remove("turn-fwd", "turn-back"); void app.offsetWidth;
+    if (dir !== "none") app.classList.add(dir === "back" ? "turn-back" : "turn-fwd");
     window.scrollTo(0, 0);
     const h = app.querySelector("h1, h2");
     if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
+  justUnlocked = -1;
 }
+// Press feedback that also works for keyboard activation (CSS :active covers touch/mouse).
+document.addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("btn")) {
+    e.target.classList.add("pressed"); setTimeout(() => e.target.classList.remove("pressed"), 110);
+  }
+});
 
-/* ---- 1. Welcome / consent ---- */
+/* ---- 1. Welcome / consent: the journal cover ---- */
+function coverArt() {
+  return `<svg class="cover-art" viewBox="0 0 300 120" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M6 96h188" /><path d="M20 96V62h150v34M20 62h150M30 62V56h130v6" />
+    <path d="M70 56V40h50v16M76 40a19 19 0 0 1 38 0M95 21v-6M91 15h8M88 24h14" />
+    <path d="M78 96V72l17-9 17 9v24M83 74v22M90 74v22M100 74v22M107 74v22M74 72h42" />
+    <path d="M32 70h8v10h-8zM48 70h8v10h-8zM134 70h8v10h-8zM150 70h8v10h-8z" />
+    <path d="M232 90V56h36v34M228 56h44v-10h-44zM238 46V38h24v8M246 66h8v9h-8z" />
+    <path d="M206 104q8-5 16 0t16 0 16 0 16 0 16 0M190 112q8-5 16 0t16 0 16 0 16 0 16 0 16 0" opacity=".7"/>
+    <path d="M12 104q8-5 16 0t16 0 16 0 16 0 16 0 16 0 16 0 16 0 16 0" opacity=".55"/>
+    <circle cx="262" cy="20" r="9" opacity=".6"/><path d="M262 4v5M262 31v5M246 20h5M273 20h5" opacity=".6"/>
+  </svg>`;
+}
 function renderConsent() {
   app.innerHTML = `
-  <article class="page">
-    <span class="tape l" aria-hidden="true"></span><span class="tape r" aria-hidden="true"></span>
-    <p class="kicker">Welcome</p>
-    <h1>${esc(CONFIG.title)}</h1>
-    <p class="muted" style="margin-top:-.4em">${esc(CONFIG.subtitle)}</p>
-    ${landmarkStrip()}
-    <h2 style="font-size:1.25rem">Before you start</h2>
-    <ul class="plain">
+  <section class="cover" id="cover" aria-labelledby="coverTitle">
+    <p class="cover-kicker">Kingston &middot; Ontario</p>
+    <h1 class="cover-title" id="coverTitle"><span class="t1">The</span><span class="t2">Limestone</span><span class="t3">Ledger</span></h1>
+    ${coverArt()}
+    <p class="cover-sub">${esc(CONFIG.subtitle)}</p>
+    <p class="cover-foot">Four clues &middot; One walk &middot; Your scrapbook</p>
+  </section>
+  <article class="page bookplate v1 settle" id="bookplate" aria-labelledby="beforeTitle">
+    <p class="kicker">Before you begin</p>
+    <h2 id="beforeTitle">A few honest words</h2>
+    <ul>
       <li>This is a <strong>Queen's University student course project</strong> (ENIN 301, Team 37), being tested as a prototype.</li>
       <li>Taking part is <strong>voluntary</strong> and for <strong>adults 18+</strong>. You can stop at any time; just close the page.</li>
       <li><strong>Your photos stay on your phone.</strong> They are never uploaded anywhere.</li>
@@ -570,30 +887,44 @@ function renderConsent() {
     </ul>
     <p class="small">The walk takes about 30 to 60 minutes and stays downtown. Please watch for traffic and stay on public paths.</p>
     <label class="check"><input type="checkbox" id="adult"> <span>I'm 18 or older and I'm happy to take part.</span></label>
-    <button class="btn block" id="startBtn" type="button" disabled>Start the mystery</button>
+    <button class="btn block" id="startBtn" type="button" disabled>Start the mystery <span class="arrow" aria-hidden="true">&rarr;</span></button>
   </article>`;
   const cb = $("#adult"), btn = $("#startBtn");
   cb.onchange = () => { btn.disabled = !cb.checked; };
-  btn.onclick = () => { if (!cb.checked) return; state.consent = true; go("intro"); };
+  btn.onclick = () => {
+    if (!cb.checked) return;
+    state.consent = true; saveState();
+    if (REDUCED) return go("intro");
+    // open the journal: scroll the cover into view, swing it open on its spine, then turn to the first page
+    window.scrollTo(0, 0);
+    $("#bookplate").style.visibility = "hidden";
+    $("#cover").classList.add("opening");
+    setTimeout(() => go("intro"), 600);
+  };
 }
 
-/* ---- 2. Story intro ---- */
+/* ---- 2. Prologue ---- */
 function renderIntro() {
   const st = CONFIG.story;
   const started = state.stops.some(s => s.opened);
+  const [p1, ...rest] = st.intro;
   app.innerHTML = `
-  <article class="page">
-    <span class="tape l" aria-hidden="true"></span>
-    <p class="kicker">The case</p>
-    <h1>A clerk's last riddle</h1>
-    ${st.intro.map(p => `<p>${esc(p)}</p>`).join("")}
-    <p class="clue">${esc(st.note)}</p>
+  <article class="page settle" aria-labelledby="introTitle">
+    <span class="tape" style="top:-12px;left:22px;transform:rotate(-4deg)" aria-hidden="true"></span>
+    <p class="kicker">Prologue</p>
+    <h1 id="introTitle">A clerk's last riddle</h1>
+    <p class="dropcap">${esc(p1)}</p>
+    ${rest.map(p => `<p>${esc(p)}</p>`).join("")}
+    <div class="letter" role="note" aria-label="The clerk's note">
+      <p>${esc(st.note.replace(/\n?—.*$/, ""))}<span class="sig">— T. P., Clerk</span></p>
+      <svg class="wax" viewBox="0 0 50 50" aria-hidden="true"><path d="M25 3c4 0 5 3 8 4s7 0 9 4-1 6 0 9 4 5 2 9-5 3-7 6-1 7-5 9-6-1-9 0-5 4-9 2-2-5-5-7-7-1-9-5 1-6 0-9-4-5-2-9 5-3 7-6 1-7 5-9 6 1 9 0z" fill="#7E3B2F"/><circle cx="25" cy="25" r="11" fill="none" stroke="#A65A49" stroke-width="1.5"/><text x="25" y="29.5" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="700" font-size="12" fill="#C98A78">TP</text></svg>
+    </div>
     <p>${esc(st.outro)}</p>
     <p class="small"><em>A made-up story built on real places and real history.</em></p>
     <label class="toggle"><input type="checkbox" id="tabletop" ${state.tabletop ? "checked" : ""}>
-      <span>Doing this from a table? <span class="small" style="font-weight:400;display:block">Shows a map of the stops and lets you add any photo from your gallery.</span></span></label>
+      <span>Doing this from a table? <span class="small" style="font-weight:400;display:block">Shows a sketch map of the stops and lets you add any photo from your gallery.</span></span></label>
     <div id="mapSlot">${state.tabletop ? mapSVG() : ""}</div>
-    <button class="btn block" id="toFirst" type="button">${started ? "Back to the trail" : "Open the first clue"}</button>
+    <button class="btn block" id="toFirst" type="button">${started ? "Back to the trail" : "Turn to Chapter I"} <span class="arrow" aria-hidden="true">&rarr;</span></button>
   </article>
   ${footerLinks()}`;
   $("#tabletop").onchange = e => {
@@ -607,44 +938,87 @@ function renderIntro() {
   bindFooter();
 }
 
-/* ---- 3. Stop pages ---- */
+/* ---- 3. Chapter pages ---- */
+function postmark(i) {
+  return `<svg class="postmark" viewBox="0 0 100 100" aria-hidden="true" style="filter:url(#ink)">
+    <defs><path id="pm${i}" d="M50 50m-34 0a34 34 0 1 1 68 0a34 34 0 1 1-68 0"/></defs>
+    <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <circle cx="50" cy="50" r="26" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text font-family="system-ui,sans-serif" font-size="8.4" font-weight="700" letter-spacing="1.3" fill="currentColor"><textPath href="#pm${i}">LIMESTONE LEDGER · KINGSTON ·</textPath></text>
+    <text x="50" y="47" text-anchor="middle" font-family="system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="1.5" fill="currentColor">CH.</text>
+    <text x="50" y="63" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="17" font-weight="700" fill="currentColor">${ROMAN[i]}</text>
+  </svg>`;
+}
+function inkStamp(i, skipped) {
+  const word = skipped ? "VISITED" : "FOUND";
+  return `<svg class="stamp ${skipped ? "skipped" : ""}" id="seal" viewBox="0 0 120 120" aria-hidden="true" style="--srot:${DECOR[i % 4].srot}">
+    <g style="filter:url(#ink)">
+      <defs><path id="st${i}" d="M60 60m-41 0a41 41 0 1 1 82 0a41 41 0 1 1-82 0"/></defs>
+      <circle cx="60" cy="60" r="55" fill="none" stroke="currentColor" stroke-width="3.5"/>
+      <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" stroke-width="1.3"/>
+      <text font-family="system-ui,sans-serif" font-size="8.6" font-weight="700" letter-spacing="1.4" fill="currentColor"><textPath href="#st${i}">CHAPTER ${ROMAN[i]} · LIMESTONE LEDGER ·</textPath></text>
+      <rect x="14" y="47" width="92" height="27" fill="var(--paper)" stroke="currentColor" stroke-width="2.6"/>
+      <text x="60" y="67.5" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="700" font-size="${skipped ? 16 : 19}" letter-spacing="2" fill="currentColor">${word}</text>
+    </g></svg>`;
+}
+
 function renderStop() {
-  const i = state.stop, cfg = CONFIG.stops[i], s = state.stops[i];
-  const canSkip = s.hint || s.wrong >= CONFIG.wrongTriesBeforeSkip;
-  const last = i === N - 1;
-  app.innerHTML = `
-  <article class="page" aria-labelledby="stopTitle">
-    <span class="tape ${i % 2 ? "r" : "l"}" aria-hidden="true"></span>
-    <p class="kicker">Page ${i + 1} of ${N}</p>
-    <h1 id="stopTitle">${s.unlocked ? esc(cfg.name) : "Clue no. " + (i + 1)}</h1>
-    <p class="clue" aria-label="Clue">${esc(cfg.clue)}</p>
-    ${state.tabletop ? `<details><summary style="min-height:44px;cursor:pointer;font-weight:600;padding:10px 0">Show the map</summary>${mapSVG(i)}</details>` : ""}
-    ${s.unlocked ? unlockedBlock(i) : lockedBlock(i, canSkip)}
-  </article>
-  ${footerLinks()}`;
+  const i = state.stop, s = state.stops[i];
+  app.innerHTML = s.unlocked ? scrapPage(i) : chapterPage(i);
   if (s.unlocked) bindUnlocked(i); else bindLocked(i);
   bindFooter();
 }
 
-function lockedBlock(i, canSkip) {
-  const s = state.stops[i], cfg = CONFIG.stops[i];
+function chapterPage(i) {
+  const cfg = CONFIG.stops[i], s = state.stops[i], d = DECOR[i % 4];
+  const h = hintsUsed(s);
+  const canSkip = h > 0 || s.wrong >= CONFIG.wrongTriesBeforeSkip;
   return `
-    <form id="answerForm" autocomplete="off" novalidate>
-      <label for="answer">I'm here: unlock the page</label>
-      <p class="small" style="margin:.2em 0 .5em">Type the one-word answer to the riddle.</p>
-      <input type="text" id="answer" name="answer" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="fb">
+  <article class="page v${i % 4} settle" aria-labelledby="stopTitle">
+    <div class="chap-head">
+      <div><span class="chap-no">Chapter ${ROMAN[i]} of ${ROMAN[N - 1]}</span><h1 id="stopTitle" class="chap-num"><span class="sr">Clue no. ${i + 1}: </span>${ROMAN[i]}</h1></div>
+      ${postmark(i)}
+    </div>
+    <p class="annot">${esc(d.annot)}</p>
+    <div class="clue-card" id="clueCard" style="--crot:${d.crot}">
+      <span class="clue-label" aria-hidden="true">the clue</span>
+      <p class="clue-text" aria-label="Clue">${esc(cfg.clue)}</p>
+    </div>
+    ${state.tabletop ? `<details><summary>Show the sketch map</summary>${mapSVG(i)}</details>` : ""}
+    <form id="answerForm" class="unlock" autocomplete="off" novalidate>
+      <label for="answer">Found it? Unlock the page</label>
+      <p class="small" style="margin:0 0 8px">Type the one-word answer you can see there.</p>
+      <input type="text" id="answer" name="answer" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="fb" placeholder="Your answer">
       <p id="fb" class="feedback" role="status" aria-live="polite"></p>
       <button class="btn block" type="submit">Unlock the page</button>
     </form>
-    <div id="hintBox">${s.hint ? `<p class="hint"><strong>Hint:</strong> ${esc(cfg.hint)}</p>` : ""}</div>
+    <div class="hints" id="hintBox" aria-live="polite">${hintNotes(i, h, false)}</div>
     <div class="row">
-      <button class="btn secondary" id="hintBtn" type="button" ${s.hint ? "hidden" : ""}>Show a hint</button>
-      <button class="btn secondary" id="skipBtn" type="button" ${canSkip ? "" : "hidden"}>Skip this clue</button>
+      <button class="btn secondary" id="hintBtn" type="button" ${h >= 2 ? "hidden" : ""}>${h === 0 ? "Need a nudge?" : "Still stuck?"}</button>
+      <button class="btn secondary" id="skipBtn" type="button" ${canSkip ? "" : "hidden"}>Skip to the page</button>
+    </div>
+  </article>
+  ${footerLinks()}`;
+}
+function hintText(i, level) {
+  const cfg = CONFIG.stops[i];
+  if (level === 1) return cfg.hint;
+  const a = String(cfg.answers[0] || "").trim();
+  return `Last nudge: the answer starts with “${a.charAt(0).toUpperCase()}” and has ${a.replace(/\s/g, "").length} letters.`;
+}
+function hintNotes(i, count, animateLast) {
+  let out = "";
+  for (let k = 1; k <= count; k++) {
+    out += `<div class="note ${animateLast && k === count ? "opening" : ""}" style="--nrot:${k === 1 ? DECOR[i % 4].nrot : "-.8deg"}" ${animateLast && k === count ? 'tabindex="-1" id="newNote"' : ""}>
+      <span class="tape ${k === 2 ? "b" : ""}" aria-hidden="true"></span>
+      <div class="note-body"><span class="note-k">${k === 1 ? "a note tucked in the margin" : "and one more, folded small"}</span><p><strong class="sr">Hint ${k}: </strong>${esc(hintText(i, k))}</p></div>
     </div>`;
+  }
+  return out;
 }
 
 function bindLocked(i) {
-  const s = state.stops[i], cfg = CONFIG.stops[i];
+  const s = state.stops[i];
   const fb = $("#fb"), input = $("#answer");
   const showSkip = () => { $("#skipBtn").hidden = false; };
   $("#answerForm").onsubmit = e => {
@@ -652,74 +1026,103 @@ function bindLocked(i) {
     if (!input.value.trim()) { fb.className = "feedback bad"; fb.textContent = "Type your answer first."; return; }
     if (isCorrect(i, input.value)) {
       s.unlocked = Date.now(); saveState();
-      render(true);
-      const seal = $("#seal"); if (seal) seal.classList.add("pop");
+      justUnlocked = i;
+      render("none");
     } else {
       s.wrong++; saveState();
       fb.className = "feedback bad";
       fb.textContent = s.wrong >= CONFIG.wrongTriesBeforeSkip
-        ? "Not quite. Try the hint, or skip ahead; no penalty."
+        ? "Not quite. Try a nudge, or skip ahead; no penalty."
         : "Not quite. Have another look around!";
       if (s.wrong >= CONFIG.wrongTriesBeforeSkip) showSkip();
+      input.classList.remove("shake"); void input.offsetWidth; input.classList.add("shake");
       input.select();
     }
   };
   $("#hintBtn").onclick = () => {
-    s.hint = true; saveState();
-    $("#hintBox").innerHTML = `<p class="hint"><strong>Hint:</strong> ${esc(cfg.hint)}</p>`;
-    $("#hintBtn").hidden = true; showSkip();
-    $("#hintBox").setAttribute("tabindex", "-1"); $("#hintBox").focus();
+    const h = Math.min(2, hintsUsed(s) + 1);
+    s.hints = h; s.hint = true; saveState();
+    $("#hintBox").innerHTML = hintNotes(i, h, true);
+    const card = $("#clueCard"); card.classList.remove("nudge"); void card.offsetWidth; card.classList.add("nudge");
+    const btn = $("#hintBtn");
+    if (h >= 2) btn.hidden = true; else btn.textContent = "Still stuck?";
+    showSkip();
+    const n = $("#newNote"); if (n) n.focus({ preventScroll: true });
+    setTimeout(() => { const n2 = $("#newNote"); if (n2 && n2.scrollIntoView) n2.scrollIntoView({ block: "nearest", behavior: REDUCED ? "auto" : "smooth" }); }, 80);
   };
   $("#skipBtn").onclick = () => {
     s.skipped = true; s.unlocked = Date.now(); saveState();
-    render(true);
+    justUnlocked = i;
+    render("none");
   };
 }
 
-function unlockedBlock(i) {
-  const s = state.stops[i], cfg = CONFIG.stops[i], last = i === N - 1;
+function scrapPage(i) {
+  const s = state.stops[i], cfg = CONFIG.stops[i], d = DECOR[i % 4], last = i === N - 1;
+  const v = i % 4;
+  const holders = v === 2
+    ? `<span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span><span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>`
+    : v === 0 ? `<span class="tape" aria-hidden="true"></span>`
+    : `<span class="tape" aria-hidden="true"></span><span class="tape b" aria-hidden="true"></span>`;
+  const fresh = justUnlocked === i;
   return `
-    <p class="feedback good" style="display:flex;align-items:center;gap:8px">
-      <svg id="seal" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="#1f5f7a"/><path d="M10 18l5 5 11-11" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      ${s.skipped ? "Skipped, but here's the page anyway:" : "Page unlocked!"}</p>
-    <p class="small" style="margin-top:-.4em">${esc(cfg.place)}</p>
-    <section class="note" aria-labelledby="fact${i}">
-      <h3 id="fact${i}">${esc(cfg.factTitle)}</h3>
-      ${cfg.facts.map(f => `<p style="margin:.3em 0">${esc(f)}</p>`).join("")}
-    </section>
-    <h2 style="font-size:1.3rem;margin-top:1.2em">Your photo</h2>
-    <p class="small">${esc(state.tabletop ? "Doing this from a table? Any photo from your gallery works." : cfg.photoPrompt)}</p>
-    <figure class="polaroid ${i % 2 ? "alt" : ""}" style="margin-bottom:6px">
-      <span class="tape" aria-hidden="true"></span>
-      <div class="photo" id="photoBox"><span class="empty">Your photo<br>goes here</span></div>
+  <article class="page v${v} ${fresh ? "thud" : "settle"}" aria-labelledby="stopTitle">
+    ${inkStamp(i, s.skipped)}
+    <div class="place">
+      <span class="chap-no">Chapter ${ROMAN[i]} · ${s.skipped ? "visited" : "found"}</span>
+      <h1 id="stopTitle">${esc(cfg.name)}</h1>
+      <p class="addr">${esc(cfg.place)}</p>
+    </div>
+    <p id="unlockMsg" class="sr" role="status">${s.skipped ? "Skipped, but here's the page anyway." : "Page unlocked!"}</p>
+    <figure class="polaroid v${v}" id="polaroid" style="--rot:${d.rot}">
+      ${holders}
+      <div class="photo" id="photoBox">${emptyPhoto(cfg)}</div>
       <figcaption id="capView">${esc(s.caption)}</figcaption>
     </figure>
     <p id="photoMsg" class="feedback" role="status" aria-live="polite" style="text-align:center"></p>
-    <div class="row">
+    <p class="small" style="text-align:center;margin-top:-4px">${esc(state.tabletop ? "From a table? Any photo from your gallery works." : cfg.photoPrompt)}</p>
+    <div class="photo-actions">
       <label class="btn filebtn" id="addLabel">
-        <span id="addText">Add photo</span>
+        <span id="addText">Take photo</span>
         <input type="file" id="photoInput" accept="image/*" ${state.tabletop ? "" : 'capture="environment"'} aria-label="Add a photo for ${esc(cfg.name)}">
       </label>
       ${state.tabletop ? "" : `<label class="btn secondary filebtn"><span>From gallery</span><input type="file" id="galleryInput" accept="image/*" aria-label="Choose a photo from your gallery for ${esc(cfg.name)}"></label>`}
     </div>
-    <button class="btn ghost" id="removePhoto" type="button" hidden>Remove photo</button>
-    <label for="caption" style="display:block;margin-top:10px">Caption <span class="small" style="font-weight:400">(optional)</span></label>
-    <input type="text" id="caption" maxlength="60" value="${esc(s.caption)}" placeholder="${esc(cfg.captionPlaceholder)}">
-    <p class="small" style="margin-top:4px">Tip: don't write names or anything personal. It's a keepsake for you.</p>
-    <button class="btn block" id="nextBtn" type="button" style="margin-top:14px">${last ? "Solve the mystery" : "Next clue"}</button>`;
+    <div style="text-align:center"><button class="btn ghost" id="removePhoto" type="button" hidden>Remove photo</button></div>
+    <div class="cap-field">
+      <label for="caption">Caption <span class="small" style="font-weight:400">(optional, written on the photo)</span></label>
+      <input type="text" id="caption" maxlength="60" value="${esc(s.caption)}" placeholder="${esc(cfg.captionPlaceholder)}">
+      <p class="small">Tip: don't write names or anything personal. It's a keepsake for you.</p>
+    </div>
+    <section class="fieldnote" style="--frot:${d.frot}" aria-labelledby="fact${i}">
+      <span class="tag" aria-hidden="true">Field note</span>
+      <h3 id="fact${i}">${esc(cfg.factTitle)}</h3>
+      ${cfg.facts.map(f => `<p>${esc(f)}</p>`).join("")}
+    </section>
+    <div class="next-row"><button class="btn block" id="nextBtn" type="button">${!last ? `Turn to Chapter ${ROMAN[i + 1]}` : stopsDone() === N ? "Solve the mystery" : "Back to the unfinished pages"} <span class="arrow" aria-hidden="true">&rarr;</span></button></div>
+  </article>
+  ${footerLinks()}`;
+}
+function emptyPhoto(cfg) {
+  return `<span class="empty"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#${GLYPH[cfg.illustration] || "g-dome"}"/></svg><span>Your photo<br>goes here</span></span>`;
 }
 
 function bindUnlocked(i) {
   const s = state.stops[i], cfg = CONFIG.stops[i];
-  const box = $("#photoBox"), msg = $("#photoMsg"), rm = $("#removePhoto");
-  async function show() {
+  const box = $("#photoBox"), msg = $("#photoMsg"), rm = $("#removePhoto"), pol = $("#polaroid");
+  if (justUnlocked === i) {
+    const st = $("#seal"); if (st) st.classList.add("pressing");
+    const m = $("#unlockMsg"); if (m) m.className = "sr";
+  }
+  async function show(placed) {
     const u = await photoURL(i);
     if (u) {
       box.innerHTML = `<img src="${u}" alt="Your photo at ${esc(cfg.name)}${s.caption ? ": " + esc(s.caption) : ""}">`;
       $("#addText").textContent = "Retake photo"; rm.hidden = false;
+      if (placed) { pol.classList.remove("placing"); void pol.offsetWidth; pol.classList.add("placing"); }
     } else {
-      box.innerHTML = `<span class="empty">Your photo<br>goes here</span>`;
-      $("#addText").textContent = "Add photo"; rm.hidden = true;
+      box.innerHTML = emptyPhoto(cfg);
+      $("#addText").textContent = "Take photo"; rm.hidden = true;
     }
   }
   async function onFile(e) {
@@ -731,7 +1134,7 @@ function bindUnlocked(i) {
       const blob = await processPhoto(f);
       revokeURL(i);
       await putPhoto(i, blob);
-      await show();
+      await show(true);
       msg.className = "feedback good"; msg.textContent = "Photo added. It's saved on this phone only.";
     } catch (err) {
       msg.className = "feedback bad";
@@ -740,7 +1143,7 @@ function bindUnlocked(i) {
   }
   $("#photoInput").onchange = onFile;
   const g = $("#galleryInput"); if (g) g.onchange = onFile;
-  rm.onclick = async () => { await deletePhoto(i); await show(); msg.textContent = "Photo removed."; };
+  rm.onclick = async () => { await deletePhoto(i); await show(false); msg.className = "feedback"; msg.textContent = "Photo removed."; };
   const cap = $("#caption");
   cap.oninput = () => { s.caption = cap.value.slice(0, 60); $("#capView").textContent = s.caption; saveState(); };
   $("#nextBtn").onclick = () => {
@@ -750,7 +1153,7 @@ function bindUnlocked(i) {
       if (firstOpen === -1) go("solved"); else go("stop", firstOpen);
     } else go("stop", next);
   };
-  show();
+  show(false);
 }
 
 function footerLinks() {
@@ -771,7 +1174,7 @@ async function doReset() {
   const d = $("#confirmReset"); if (d.open) d.close();
   await wipeEverything();
   if (DEMO) { location.href = location.pathname; return; }
-  render(true);
+  render("back");
 }
 
 /* ---------------------------------------------------------------------
@@ -783,7 +1186,13 @@ const ART = {
   park: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#d6e7ee"/><rect y="250" width="400" height="150" fill="#8fbf7f"/><path d="M90 250V150a110 110 0 0 1 220 0v100h-36V160a74 74 0 0 0-148 0v90z" fill="#cbc6b8" stroke="#9b9a93" stroke-width="3"/><ellipse cx="200" cy="262" rx="80" ry="16" fill="#5d9ab4"/><path d="M200 258c-6-30-2-50 0-60 2 10 6 30 0 60" fill="#bfe0ee"/><rect x="40" y="300" width="320" height="8" fill="#6b5a45"/><g transform="translate(70 318)"><rect x="0" y="10" width="170" height="40" fill="#222"/><rect x="120" y="-14" width="56" height="64" fill="#2b2b2b"/><rect x="20" y="-10" width="16" height="22" fill="#2b2b2b"/><rect x="128" y="-6" width="20" height="18" fill="#e9c98b"/><rect x="0" y="22" width="120" height="4" fill="#a8432f"/>${[25,60,95,150].map(x=>`<circle cx="${x}" cy="54" r="${x===150?12:16}" fill="#444" stroke="#999" stroke-width="3"/>`).join("")}</g></svg>`,
   tower: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#e7eef0"/><circle cx="90" cy="90" r="30" fill="#f3d27a" opacity=".8"/><rect y="250" width="400" height="150" fill="#3f7f9c"/><path d="M0 270q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0" stroke="#bfe0ee" stroke-width="3" fill="none"/><path d="M0 320q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0" stroke="#bfe0ee" stroke-width="3" fill="none" opacity=".6"/><path d="M145 262V150h110v112z" fill="#cbc6b8"/><path d="M145 150h110v8H145z" fill="#9b9a93"/><path d="M140 150v-30h120v30z" fill="#b8b3a5"/><path d="M170 120V94h60v26z" fill="#a9a497"/><path d="M168 94a32 18 0 0 1 64 0z" fill="#8b8c87"/>${[160,190,220].map(x=>`<rect x="${x}" y="126" width="12" height="16" fill="#5c6a73"/>`).join("")}<rect x="194" y="200" width="12" height="20" fill="#5c6a73"/><ellipse cx="200" cy="264" rx="70" ry="8" fill="#9b9a93"/></svg>`,
 };
-function artURL(key) { return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(ART[key]); }
+// Remap the illustration colours onto the Limestone Ledger palette (muted, no saturated hues).
+const RECOLOR = { "#cfe3ec": "#DFE3DD", "#d6e7ee": "#DFE3DD", "#e7eef0": "#E6E6DE", "#f3d27a": "#D9C08A", "#a8432f": "#8E4A3A", "#1f5f7a": "#627F91",
+  "#2f6b45": "#344B3C", "#c0392b": "#9B5A45", "#e67e22": "#B88A4E", "#8e44ad": "#6E5A6B", "#27ae60": "#5F7A55", "#8fbf7f": "#93A386", "#5d9ab4": "#7E9AA8",
+  "#3f7f9c": "#627F91", "#bfe0ee": "#C9D6DA", "#6f9c8f": "#7F9A8A", "#e9c98b": "#D8C49A", "#9cc6d6": "#B9C9CC", "#efe9dc": "#F1EADB", "#a9cf98": "#B4C0A3",
+  "#1f2a33": "#292B28", "#6b6b66": "#5B5D56" };
+function recolor(svg) { return svg.replace(/#[0-9a-f]{6}/gi, c => RECOLOR[c.toLowerCase()] || c); }
+function artURL(key) { return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(recolor(ART[key])); }
 
 function landmarkStrip() {
   return `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0" aria-hidden="true">
@@ -792,7 +1201,8 @@ function landmarkStrip() {
 }
 
 // Schematic, not-to-scale map for tabletop mode. Pure inline SVG: no map tiles.
-function mapSVG(highlight) {
+function mapSVG(highlight) { return recolor(mapSVGRaw(highlight)); }
+function mapSVGRaw(highlight) {
   const pts = [
     { x: 120, y: 92, label: "1 Market Square" },
     { x: 150, y: 168, label: "2 City Hall" },
@@ -802,7 +1212,7 @@ function mapSVG(highlight) {
   return `<svg class="map" viewBox="0 0 360 340" role="img" aria-labelledby="mapT mapD">
     <title id="mapT">Sketch map of the four stops</title>
     <desc id="mapD">Not to scale. Stop 1, Springer Market Square, is behind City Hall. Stop 2, City Hall, faces Ontario Street. Stop 3, Confederation Park, is across Ontario Street on the water. Stop 4, Shoal Tower, stands in the harbour, seen from the park's edge.</desc>
-    <rect width="360" height="340" fill="#efe9dc"/>
+    <rect width="360" height="340" fill="#efe9dc"/><rect width="360" height="340" fill="#F3EBDA" opacity=".5"/>
     <path d="M0 250 L170 330 L360 330 L360 175 Q300 210 250 205 L210 280 Z" fill="#9cc6d6"/>
     <path d="M0 250 L210 280" stroke="#b6ad97" stroke-width="2"/>
     <g stroke="#fff" stroke-width="14" fill="none" stroke-linecap="round">
@@ -820,10 +1230,12 @@ function mapSVG(highlight) {
     <circle cx="300" cy="292" r="10" fill="#cbc6b8" stroke="#8b8c87" stroke-width="2"/>
     <path d="M${pts.map(p => p.x + " " + p.y).join(" L")}" stroke="#a8432f" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
     ${pts.map((p, i) => `<g>
-      <circle cx="${p.x}" cy="${p.y}" r="${highlight === i ? 15 : 12}" fill="${highlight === i ? "#a8432f" : "#1f5f7a"}" stroke="#fff" stroke-width="3"/>
+      <circle cx="${p.x}" cy="${p.y}" r="${highlight === i ? 15 : 12}" fill="${highlight === i ? "#AD9160" : "#344B3C"}" stroke="#fff" stroke-width="3"/>
       <text x="${p.x}" y="${p.y + 4.5}" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="700" font-size="13" fill="#fff">${i + 1}</text>
       <text x="${p.x + (i === 3 ? -14 : 18)}" y="${p.y + (i === 3 ? 30 : 4)}" ${i === 3 ? 'text-anchor="middle"' : ""} font-family="system-ui,sans-serif" font-size="13" font-weight="600" fill="#1f2a33" paint-order="stroke" stroke="#efe9dc" stroke-width="4">${p.label.slice(2)}</text></g>`).join("")}
-    <text x="350" y="20" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#6b6b66">Sketch, not to scale</text>
+    <rect x="5" y="5" width="350" height="330" fill="none" stroke="#7A6439" stroke-width="1.5"/><rect x="9" y="9" width="342" height="322" fill="none" stroke="#7A6439" stroke-width=".6"/>
+    <g transform="translate(36 300)" stroke="#7A6439" fill="none" stroke-width="1.1"><circle r="15"/><path d="M0-20L3.5-3 0 0-3.5-3zM0 20L3.5 3 0 0-3.5 3z" fill="#AD9160"/><path d="M-20 0h40"/><text y="-23" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10" font-weight="700" fill="#7A6439" stroke="none">N</text></g>
+    <text x="344" y="26" text-anchor="end" font-family="Fraunces,Georgia,serif" font-style="italic" font-size="12" fill="#5B5D56">Sketch, not to scale</text>
   </svg>`;
 }
 
@@ -838,7 +1250,7 @@ async function loadDemo() {
     const s = state.stops[i];
     s.opened = t; t += mins[i] * 60000; s.unlocked = t; t += 3 * 60000;
     s.caption = CONFIG.demoCaptions[i] || "";
-    s.hint = i === 2;
+    s.hint = i === 2; s.hints = i === 2 ? 1 : 0;
     try {
       const img = await loadImage(artURL(CONFIG.stops[i].illustration));
       const c = document.createElement("canvas"); c.width = c.height = 1000;
@@ -860,44 +1272,69 @@ async function loadDemo() {
    --------------------------------------------------------------------- */
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let exportFile = null, exportURL = null;
+// Where each photo "comes from" before it lands in the final spread (stop-motion assembly).
+const ARRIVE = [{ fx: "-40px", fy: "-50px", fr: "-12deg" }, { fx: "36px", fy: "-60px", fr: "10deg" }, { fx: "-30px", fy: "40px", fr: "9deg" }, { fx: "40px", fy: "30px", fr: "-11deg" }];
+
+function waxSeal(size) {
+  return `<svg class="seal" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M50 4c6 0 8 5 13 6s11-1 14 5-2 9 0 14 7 7 5 13-8 5-10 10-1 11-7 14-9-2-14 0-8 7-14 5-5-8-10-10-11 1-14-5 2-9 0-14-7-7-5-13 8-5 10-10 1-11 7-14 9 2 14 0 8-7 14-5z" fill="#344B3C"/>
+    <circle cx="50" cy="50" r="30" fill="none" stroke="#5E7A66" stroke-width="2"/>
+    <circle cx="50" cy="50" r="25" fill="none" stroke="#5E7A66" stroke-width="1" stroke-dasharray="2 3"/>
+    <text x="50" y="47" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10" font-weight="700" letter-spacing=".8" fill="#CDB688">CASE</text>
+    <text x="50" y="61" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="10" font-weight="700" letter-spacing=".4" fill="#CDB688">CLOSED</text>
+  </svg>`;
+}
 
 function renderSolved() {
   const st = CONFIG.story;
   const formReady = /^https:\/\//.test(FEEDBACK_FORM_URL);
   app.innerHTML = `
-  <article class="page" aria-labelledby="solvedTitle">
-    <span class="tape l" aria-hidden="true"></span><span class="tape r" aria-hidden="true"></span>
-    <svg class="seal pop" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#a8432f"/><circle cx="50" cy="50" r="38" fill="none" stroke="#f6e3d9" stroke-width="2" stroke-dasharray="4 4"/><text x="50" y="47" text-anchor="middle" font-family="Georgia,serif" font-size="15" font-weight="700" fill="#fff">CASE</text><text x="50" y="65" text-anchor="middle" font-family="Georgia,serif" font-size="15" font-weight="700" fill="#fff">CLOSED</text></svg>
-    <p class="kicker" style="text-align:center">Mystery solved</p>
-    <h1 id="solvedTitle" style="text-align:center">${esc(st.solutionTitle)}</h1>
+  <article class="page finale v2" aria-labelledby="solvedTitle">
+    <span class="tape" style="top:-12px;left:24px;transform:rotate(-5deg)" aria-hidden="true"></span>
+    <span class="tape b" style="top:-10px;right:26px;transform:rotate(4deg)" aria-hidden="true"></span>
+    ${waxSeal(96)}
+    <p class="kicker">Mystery solved</p>
+    <h1 id="solvedTitle">${esc(st.solutionTitle)}</h1>
     <div class="reveal">${st.solution.map(p => `<p>${esc(p)}</p>`).join("")}</div>
-    <div class="spread" id="spread">${CONFIG.stops.map((s, i) => `
-      <figure class="polaroid" style="margin:0">
-        <div class="photo" data-ph="${i}"><span class="empty" style="font-size:.85rem">No photo<br>this time</span></div>
+    <div class="spread" id="spread" role="list" aria-label="Your scrapbook">${CONFIG.stops.map((s, i) => `
+      <figure class="polaroid arrive" role="listitem" style="--rot:${DECOR[i % 4].rot};--d:${(i * 0.16 + 0.15).toFixed(2)}s;--fx:${ARRIVE[i].fx};--fy:${ARRIVE[i].fy};--fr:${ARRIVE[i].fr}">
+        <span class="tape ${i % 2 ? "b" : ""}" aria-hidden="true"></span>
+        <div class="photo" data-ph="${i}">${emptySpread(s)}</div>
         <figcaption>${esc(state.stops[i].caption)}</figcaption>
-        <div class="stopname">${i + 1}. ${esc(s.name)}</div>
+        <div class="stopname">${ROMAN[i]} · ${esc(s.name)}</div>
+        ${s.keepsake ? `<p class="fact">${esc(s.keepsake)}</p>` : ""}
       </figure>`).join("")}
     </div>
-    <p style="font-family:var(--hand);font-size:1.15rem;text-align:center;color:var(--lake-dark)">${esc(st.invitation)}</p>
+    <p class="invite">${esc(st.invitation)}</p>
 
-    <h2 style="font-size:1.35rem;margin-top:1.4em">Save my scrapbook</h2>
-    <p class="small">This makes one image of your whole scrapbook, right here on your phone.</p>
-    <div id="saveArea"><p class="small" role="status">Preparing your scrapbook image…</p></div>
+    <section class="section" aria-labelledby="saveTitle">
+      <hr class="rule">
+      <h2 id="saveTitle">Save my scrapbook</h2>
+      <p class="small">This makes one image of your whole scrapbook, right here on your phone.</p>
+      <div id="saveArea"><p class="small" role="status">Binding your pages into one image…</p></div>
+    </section>
 
-    <h2 style="font-size:1.35rem;margin-top:1.4em">Your times</h2>
-    <p class="small">Recorded only on this phone, from opening each clue to unlocking it. If you like, mention them in the feedback form.</p>
-    ${timesTable()}
+    <section class="section" aria-labelledby="timesTitle">
+      <h2 id="timesTitle">Your field log</h2>
+      <p class="small">Recorded only on this phone, from opening each clue to unlocking it. If you like, mention these in the feedback form.</p>
+      ${timesTable()}
+    </section>
 
-    <h2 style="font-size:1.35rem;margin-top:1.4em">Tell us how it went</h2>
-    <p class="small">The feedback form is anonymous and optional: no names or emails. It opens in a new tab.</p>
-    ${formReady
-      ? `<a class="btn block secondary" href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener noreferrer">Give anonymous feedback</a>`
-      : `<button class="btn block secondary" type="button" disabled>Feedback form coming soon</button>`}
+    <section class="section" aria-labelledby="fbTitle">
+      <h2 id="fbTitle">Tell us how it went</h2>
+      <p class="small">The feedback form is anonymous and optional: no names or emails. It opens in a new tab.</p>
+      ${formReady
+        ? `<a class="btn block secondary" href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener noreferrer">Give anonymous feedback <span class="arrow" aria-hidden="true">&nearr;</span></a>`
+        : `<button class="btn block secondary" type="button" disabled>Feedback form coming soon</button>`}
+    </section>
   </article>
   ${footerLinks()}`;
   bindFooter();
   fillSpread();
   prepareExport();
+}
+function emptySpread(s) {
+  return `<span class="empty" style="padding:8px"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#${GLYPH[s.illustration] || "g-dome"}"/></svg><span style="font-size:1rem">a page left<br>for next time</span></span>`;
 }
 
 async function fillSpread() {
@@ -910,15 +1347,15 @@ async function fillSpread() {
 
 function timesTable() {
   const rows = CONFIG.stops.map((s, i) => {
-    const t = state.stops[i];
-    const notes = [t.hint && "hint used", t.skipped && "skipped", t.wrong ? `${t.wrong} wrong ${t.wrong === 1 ? "try" : "tries"}` : ""].filter(Boolean).join(", ") || "—";
-    return `<tr><td>Stop ${i + 1}</td><td>${t.unlocked && t.opened ? fmtDuration(t.unlocked - t.opened) : "–"}</td><td>${notes}</td></tr>`;
+    const t = state.stops[i], h = hintsUsed(t);
+    const notes = [h === 1 && "hint used", h > 1 && `${h} hints used`, t.skipped && "skipped", t.wrong ? `${t.wrong} wrong ${t.wrong === 1 ? "try" : "tries"}` : ""].filter(Boolean).join(", ") || "—";
+    return `<tr><td>${ROMAN[i]}</td><td>${t.unlocked && t.opened ? fmtDuration(t.unlocked - t.opened) : "–"}</td><td>${notes}</td></tr>`;
   }).join("");
   const first = Math.min(...state.stops.map(s => s.opened || Infinity));
   const last = Math.max(...state.stops.map(s => s.unlocked || 0));
   const total = isFinite(first) && last > first ? fmtDuration(last - first) : "–";
-  return `<table class="times"><thead><tr><th scope="col">Stop</th><th scope="col">Time</th><th scope="col">Notes</th></tr></thead>
-    <tbody>${rows}<tr><th scope="row">Total</th><td colspan="2">${total} (first clue to last unlock)</td></tr></tbody></table>`;
+  return `<table class="times ledger"><thead><tr><th scope="col">Ch.</th><th scope="col">Time</th><th scope="col">Notes</th></tr></thead>
+    <tbody>${rows}<tr><th scope="row" style="font-family:var(--serif)">Total</th><td colspan="2">${total} <span class="small">(first clue to last unlock)</span></td></tr></tbody></table>`;
 }
 
 async function prepareExport() {
@@ -940,7 +1377,7 @@ async function prepareExport() {
            <p class="small"><strong>Android:</strong> the image saves to your Downloads and shows up in your Gallery/Photos app. <strong>iPhone:</strong> if you see this button, tap it, then tap the share icon and choose “Save Image”; or press and hold the preview below and choose “Save to Photos”.</p>
            ${canShareFile ? `<button class="btn block secondary" id="shareBtn" type="button">Share or save with…</button>` : ""}`}
       <p id="shareMsg" class="feedback" role="status" aria-live="polite"></p>
-      <details><summary style="min-height:44px;cursor:pointer;font-weight:600;padding:10px 0">Preview the image</summary>
+      <details><summary>Preview the image</summary>
         <img class="saved-preview" src="${exportURL}" alt="Your finished scrapbook as one image: title, four photos with captions, and the solution."></details>`;
     const sb = $("#shareBtn");
     if (sb) sb.onclick = async () => {
@@ -959,16 +1396,22 @@ async function prepareExport() {
   }
 }
 
-/* Draw the whole scrapbook on one canvas. */
+/* Draw the whole scrapbook on one canvas (same look as the app: parchment, Fraunces, Caveat). */
 async function buildScrapbookImage() {
-  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
-  const W = 1080, PAD = 60;
-  const HAND = getComputedStyle(document.documentElement).getPropertyValue("--hand").trim() || "cursive";
-  const SERIF = "Georgia, 'Times New Roman', serif";
+  const SERIF = "Fraunces, Georgia, 'Times New Roman', serif";
+  const HAND = "Caveat, 'Segoe Print', 'Bradley Hand', cursive";
   const SANS = "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+  try {
+    if (document.fonts && document.fonts.load) {
+      await Promise.all(["600 80px Fraunces", "italic 400 34px Fraunces", "400 30px Fraunces", "700 20px Fraunces", "500 36px Caveat", "700 36px Caveat"]
+        .map(f => document.fonts.load(f).catch(() => null)));
+    }
+  } catch (e) {}
+  const C = { parchment: "#F5F0E6", paper: "#FBF8F1", forest: "#344B3C", forestInk: "#2C4234", lake: "#4A6576", brass: "#AD9160", brassDark: "#7A6439", charcoal: "#292B28", soft: "#4F514B", oxblood: "#7E3B2F" };
+  const W = 1080, PAD = 64;
   const measure = document.createElement("canvas").getContext("2d");
   const wrap = (ctx, text, maxW) => {
-    const words = String(text).split(/\s+/), lines = []; let line = "";
+    const words = String(text).split(/\s+/).filter(Boolean), lines = []; let line = "";
     for (const w of words) {
       const t = line ? line + " " + w : w;
       if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t;
@@ -976,104 +1419,145 @@ async function buildScrapbookImage() {
     if (line) lines.push(line);
     return lines;
   };
-  // Pre-measure the solution text block
-  measure.font = `30px ${SERIF}`;
+  measure.font = `400 30px ${SERIF}`;
   const solLines = [];
-  CONFIG.story.solution.forEach((p, k) => { if (k) solLines.push(""); solLines.push(...wrap(measure, p, W - PAD * 2 - 40)); });
-  measure.font = `34px ${HAND}`;
-  const invLines = wrap(measure, CONFIG.story.invitation, W - PAD * 2 - 40);
+  CONFIG.story.solution.forEach((p, k) => { if (k) solLines.push(""); solLines.push(...wrap(measure, p, W - PAD * 2 - 80)); });
+  measure.font = `500 42px ${HAND}`;
+  const invLines = wrap(measure, CONFIG.story.invitation, W - PAD * 2 - 80);
 
-  const HEADER = 330, CARD_W = 440, PHOTO = 400, CARD_H = 560, GAP_Y = 50;
-  const gridH = 2 * CARD_H + GAP_Y + 60;
-  const solH = 90 + solLines.length * 44 + 30 + invLines.length * 46 + 50;
-  const H = HEADER + gridH + solH + 110;
+  const HEADER = 380, CARD_W = 440, PHOTO = 400, CARD_H = 548, ROW_H = CARD_H + 92;
+  const gridTop = HEADER + 30, gridH = 2 * ROW_H;
+  const solH = 130 + solLines.length * 44 + 26 + invLines.length * 50 + 40;
+  const H = gridTop + gridH + 30 + solH + 130;
 
   const c = document.createElement("canvas");
   c.width = W; c.height = H;
   const ctx = c.getContext("2d");
-  // paper
-  ctx.fillStyle = "#f6f1e6"; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = "rgba(120,100,60,.07)";
-  for (let y = 0; y < H; y += 9) for (let x = (y / 9) % 2 ? 4 : 0; x < W; x += 9) ctx.fillRect(x, y, 1.5, 1.5);
-  // binding strip
-  for (let y = 0; y < H; y += 24) { ctx.fillStyle = (y / 24) % 2 ? "#e3d9c3" : "#ede5d3"; ctx.fillRect(0, y, 16, 24); }
-  // header
-  tape(ctx, W / 2 - 90, 30, 180, 40, -2, "#e9c98b");
-  ctx.textAlign = "center"; ctx.fillStyle = "#8b8c87"; ctx.font = `600 24px ${SANS}`;
-  ctx.fillText("K I N G S T O N ,   O N T A R I O", W / 2, 120);
-  ctx.fillStyle = "#174a60"; ctx.font = `bold 76px ${HAND}`;
-  ctx.fillText(CONFIG.title, W / 2, 205);
-  ctx.fillStyle = "#3f4b55"; ctx.font = `italic 34px ${SERIF}`;
-  ctx.fillText(CONFIG.subtitle, W / 2, 258);
-  ctx.strokeStyle = "#1f5f7a"; ctx.lineWidth = 3; ctx.setLineDash([10, 10]);
-  ctx.beginPath(); ctx.moveTo(PAD + 60, 295); ctx.lineTo(W - PAD - 60, 295); ctx.stroke(); ctx.setLineDash([]);
+  // parchment, grain, spine shadow
+  const bg = ctx.createRadialGradient(W / 2, 0, 100, W / 2, H * .4, H);
+  bg.addColorStop(0, "#F9F5EC"); bg.addColorStop(.6, C.parchment); bg.addColorStop(1, "#EAE1CF");
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let k = 0; k < 9000; k++) { ctx.fillStyle = `rgba(110,90,55,${(rnd() * .07).toFixed(3)})`; ctx.fillRect(rnd() * W, rnd() * H, 1.6, 1.6); }
+  const sp = ctx.createLinearGradient(0, 0, 40, 0); sp.addColorStop(0, "rgba(41,43,40,.16)"); sp.addColorStop(1, "rgba(41,43,40,0)");
+  ctx.fillStyle = sp; ctx.fillRect(0, 0, 40, H);
 
-  // polaroids 2x2
-  // One photo at a time (keeps phone memory low), each verified before use.
+  // header
+  ctx.textAlign = "center";
+  ctx.fillStyle = C.brassDark; ctx.font = `700 22px ${SANS}`;
+  spaced(ctx, "KINGSTON · ONTARIO", W / 2, 104, 6);
+  ctx.fillStyle = C.forestInk; ctx.font = `600 84px ${SERIF}`;
+  ctx.fillText(CONFIG.title, W / 2, 200);
+  ctx.fillStyle = C.soft; ctx.font = `italic 400 36px ${SERIF}`;
+  ctx.fillText(CONFIG.subtitle, W / 2, 258);
+  brassRule(ctx, W / 2, 312, 300, C.brass);
+
+  // photos, verified one at a time (see photoSquare)
   const imgs = [];
-  for (let i = 0; i < N; i++) {
-    try { imgs.push(await photoSquare(i, PHOTO * 2)); } catch (e) { imgs.push(null); }
-  }
-  const rot = [-2.5, 2, 1.8, -2.2];
+  for (let i = 0; i < N; i++) { try { imgs.push(await photoSquare(i, PHOTO * 2)); } catch (e) { imgs.push(null); } }
+  const rot = [-2.4, 1.9, 1.4, -2.1];
   CONFIG.stops.forEach((s, i) => {
     const col = i % 2, row = Math.floor(i / 2);
-    const cx = col ? W - PAD - CARD_W / 2 - 10 : PAD + CARD_W / 2 + 10;
-    const cy = HEADER + 40 + row * (CARD_H + GAP_Y) + CARD_H / 2;
+    const cx = col ? W - PAD - CARD_W / 2 + 4 : PAD + CARD_W / 2 - 4;
+    const cy = gridTop + row * ROW_H + CARD_H / 2 + 20;
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot[i] * Math.PI / 180);
-    ctx.shadowColor = "rgba(0,0,0,.22)"; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8;
-    ctx.fillStyle = "#fff"; ctx.fillRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H);
+    ctx.shadowColor = "rgba(41,43,40,.28)"; ctx.shadowBlur = 26; ctx.shadowOffsetY = 12;
+    ctx.fillStyle = "#FFFEFA"; ctx.fillRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H);
     ctx.shadowColor = "transparent";
     const px = -PHOTO / 2, py = -CARD_H / 2 + 20;
     const img = imgs[i];
-    if (img) {
-      ctx.drawImage(img, px, py, PHOTO, PHOTO);
-    } else {
-      ctx.fillStyle = "#ece7dc"; ctx.fillRect(px, py, PHOTO, PHOTO);
-      ctx.strokeStyle = "#cfcbc0"; ctx.lineWidth = 3; ctx.setLineDash([12, 10]);
-      ctx.strokeRect(px + 20, py + 20, PHOTO - 40, PHOTO - 40); ctx.setLineDash([]);
-      ctx.fillStyle = "#8b8c87"; ctx.textAlign = "center"; ctx.font = `30px ${HAND}`;
-      ctx.fillText("a page left", 0, py + PHOTO / 2 - 6);
-      ctx.fillText("for next time", 0, py + PHOTO / 2 + 34);
+    if (img) ctx.drawImage(img, px, py, PHOTO, PHOTO);
+    else {
+      ctx.fillStyle = "#E4DDCF"; ctx.fillRect(px, py, PHOTO, PHOTO);
+      ctx.strokeStyle = "#C9BFAB"; ctx.lineWidth = 3; ctx.setLineDash([12, 10]);
+      ctx.strokeRect(px + 22, py + 22, PHOTO - 44, PHOTO - 44); ctx.setLineDash([]);
+      ctx.fillStyle = "#8A8270"; ctx.textAlign = "center"; ctx.font = `500 40px ${HAND}`;
+      ctx.fillText("a page left", 0, py + PHOTO / 2 - 4);
+      ctx.fillText("for next time", 0, py + PHOTO / 2 + 40);
     }
     ctx.textAlign = "center";
-    const cap = state.stops[i].caption;
-    ctx.fillStyle = "#1f2a33"; ctx.font = `30px ${HAND}`;
-    let capLines = wrap(ctx, cap || "", CARD_W - 40).slice(0, 2);
-    capLines.forEach((l, k) => ctx.fillText(l, 0, py + PHOTO + 48 + k * 34));
-    ctx.fillStyle = "#1f5f7a"; ctx.font = `600 21px ${SANS}`;
-    ctx.fillText(`${i + 1}. ${s.name}`.toUpperCase(), 0, CARD_H / 2 - 22);
+    ctx.fillStyle = C.charcoal; ctx.font = `500 40px ${HAND}`;
+    const capLines = wrap(ctx, state.stops[i].caption || "", CARD_W - 40).slice(0, 2);
+    const capY = py + PHOTO + (capLines.length > 1 ? 44 : 60);
+    capLines.forEach((l, k) => ctx.fillText(l, 0, capY + k * 38));
+    ctx.fillStyle = C.brassDark; ctx.font = `700 19px ${SANS}`;
+    spaced(ctx, `${ROMAN[i]} · ${s.name}`.toUpperCase(), 0, CARD_H / 2 - 22, 2.5);
     ctx.restore();
-    tape(ctx, cx - 60 + (i % 2 ? 20 : -20), cy - CARD_H / 2 - 14, 120, 34, i % 2 ? 6 : -5, i % 2 ? "#b9d3d9" : "#e9c98b");
+    // tape
+    const tx = col ? cx + 20 : cx - 20;
+    tape(ctx, tx - 62, cy - CARD_H / 2 - 16, 124, 34, i % 2 ? 6 : -5, i % 2 ? "rgba(169,187,191,.85)" : "rgba(216,196,154,.88)");
+    // keepsake line under the card
+    if (s.keepsake) {
+      ctx.fillStyle = C.lake; ctx.font = `500 32px ${HAND}`; ctx.textAlign = "center";
+      ctx.fillText(s.keepsake, cx, cy + CARD_H / 2 + 58);
+    }
   });
 
   // solution card
-  let y = HEADER + gridH;
-  ctx.fillStyle = "#fffdf8"; ctx.strokeStyle = "#e6dcc7"; ctx.lineWidth = 2;
-  ctx.fillRect(PAD, y, W - PAD * 2, solH); ctx.strokeRect(PAD, y, W - PAD * 2, solH);
-  ctx.fillStyle = "#a8432f"; ctx.beginPath(); ctx.arc(W - PAD - 50, y + 10, 48, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#fff"; ctx.font = `bold 17px ${SERIF}`; ctx.textAlign = "center";
-  ctx.fillText("CASE", W - PAD - 50, y + 6); ctx.fillText("CLOSED", W - PAD - 50, y + 27);
-  ctx.textAlign = "left"; ctx.fillStyle = "#174a60"; ctx.font = `bold 44px ${HAND}`;
-  ctx.fillText(CONFIG.story.solutionTitle, PAD + 20, y + 66);
-  ctx.fillStyle = "#1f2a33"; ctx.font = `30px ${SERIF}`;
-  y += 120;
-  solLines.forEach(l => { if (l) ctx.fillText(l, PAD + 20, y); y += 44; });
-  y += 20; ctx.fillStyle = "#174a60"; ctx.font = `34px ${HAND}`;
-  invLines.forEach(l => { ctx.fillText(l, PAD + 20, y); y += 46; });
+  let y = gridTop + gridH + 30;
+  ctx.save();
+  ctx.shadowColor = "rgba(41,43,40,.18)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = 8;
+  ctx.fillStyle = C.paper; ctx.fillRect(PAD, y, W - PAD * 2, solH);
+  ctx.restore();
+  ctx.fillStyle = "rgba(41,43,40,.08)"; ctx.fillRect(PAD, y, 10, solH);
+  tape(ctx, PAD + 40, y - 16, 130, 34, -4, "rgba(216,196,154,.88)");
+  drawSeal(ctx, W - PAD - 70, y + 24, 62, C, SERIF);
+  ctx.textAlign = "left"; ctx.fillStyle = C.brassDark; ctx.font = `700 19px ${SANS}`;
+  spacedLeft(ctx, "MYSTERY SOLVED", PAD + 44, y + 62, 4);
+  ctx.fillStyle = C.forestInk; ctx.font = `600 46px ${SERIF}`;
+  ctx.fillText(CONFIG.story.solutionTitle, PAD + 44, y + 116);
+  ctx.fillStyle = C.charcoal; ctx.font = `400 30px ${SERIF}`;
+  y += 170;
+  solLines.forEach(l => { if (l) ctx.fillText(l, PAD + 44, y); y += 44; });
+  y += 18; ctx.fillStyle = C.forest; ctx.font = `500 42px ${HAND}`;
+  invLines.forEach(l => { ctx.fillText(l, PAD + 44, y); y += 50; });
 
   // footer
-  ctx.textAlign = "center"; ctx.fillStyle = "#8b8c87"; ctx.font = `22px ${SANS}`;
+  ctx.textAlign = "center"; ctx.fillStyle = "#7B7C74"; ctx.font = `500 21px ${SANS}`;
   const d = new Date();
-  ctx.fillText(`${d.toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}  ·  A Queen's University ENIN 301 prototype`, W / 2, H - 45);
+  ctx.fillText(`${d.toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}  ·  The Limestone Ledger  ·  A Queen's University ENIN 301 prototype`, W / 2, H - 52);
 
   const blob = await new Promise(r => c.toBlob(r, "image/png"));
   c.width = c.height = 0;
   if (!blob) throw new Error("export");
   return blob;
 }
+function spaced(ctx, text, x, y, gap) {
+  // letter-spaced text, centred on x (canvas letterSpacing isn't available everywhere)
+  const chars = [...text], widths = chars.map(ch => ctx.measureText(ch).width);
+  const total = widths.reduce((a, b) => a + b, 0) + gap * (chars.length - 1);
+  const align = ctx.textAlign; ctx.textAlign = "left";
+  let cx = x - total / 2;
+  chars.forEach((ch, k) => { ctx.fillText(ch, cx, y); cx += widths[k] + gap; });
+  ctx.textAlign = align;
+}
+function spacedLeft(ctx, text, x, y, gap) {
+  let cx = x; [...text].forEach(ch => { ctx.fillText(ch, cx, y); cx += ctx.measureText(ch).width + gap; });
+}
+function brassRule(ctx, cx, y, half, color) {
+  ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx - half, y); ctx.lineTo(cx - 16, y); ctx.moveTo(cx + 16, y); ctx.lineTo(cx + half, y); ctx.stroke();
+  ctx.save(); ctx.translate(cx, y); ctx.rotate(Math.PI / 4); ctx.fillStyle = color; ctx.fillRect(-5, -5, 10, 10); ctx.restore();
+}
+function drawSeal(ctx, x, y, r, C, SERIF) {
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = C.forest; ctx.beginPath();
+  for (let a = 0; a <= 24; a++) { const ang = a / 24 * Math.PI * 2, rr = r * (a % 2 ? .93 : 1); ctx.lineTo(Math.cos(ang) * rr, Math.sin(ang) * rr); }
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#5E7A66"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, r * .68, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = "#CDB688"; ctx.textAlign = "center"; ctx.font = `700 15px ${SERIF}`;
+  ctx.fillText("CASE", 0, -3); ctx.fillText("CLOSED", 0, 16);
+  ctx.restore();
+}
 function tape(ctx, x, y, w, h, deg, color) {
   ctx.save(); ctx.translate(x + w / 2, y + h / 2); ctx.rotate(deg * Math.PI / 180);
-  ctx.globalAlpha = .85; ctx.fillStyle = color; ctx.fillRect(-w / 2, -h / 2, w, h);
+  ctx.fillStyle = color; ctx.beginPath();
+  // torn (zig-zag) ends
+  ctx.moveTo(-w / 2, -h / 2); ctx.lineTo(w / 2, -h / 2);
+  for (let k = 0; k <= 6; k++) ctx.lineTo(w / 2 + (k % 2 ? -4 : 0), -h / 2 + k * h / 6);
+  ctx.lineTo(-w / 2, h / 2);
+  for (let k = 6; k >= 0; k--) ctx.lineTo(-w / 2 + (k % 2 ? 4 : 0), -h / 2 + k * h / 6);
+  ctx.closePath(); ctx.fill();
   ctx.restore();
 }
 

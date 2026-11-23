@@ -13,6 +13,7 @@ It's a static website with no server, no sign-up, no analytics, and nothing load
 | `sw.js` | Service worker: keeps the site working on a weak signal once it has loaded. |
 | `postcard.html` | Printable 6×4 in postcard (front and back) with a QR code. |
 | `qr.js` | Small QR code generator used by the postcard. It runs offline, so no QR website ever sees your link. |
+| `fonts/` | Bundled fonts: **Fraunces** (headings) and **Caveat** (handwriting), both SIL Open Font License (licence files included). Served from the repo, so no font service is contacted. |
 | `icon.svg`, `manifest.webmanifest` | Browser tab icon and "Add to Home Screen" info. |
 
 ---
@@ -68,15 +69,18 @@ Everything is in one block at the top of the `<script>` in `index.html`, between
   facts: ["A public market has run on this square since 1801 ...", "..."],
   photoPrompt: "...", captionPlaceholder: "...",
   illustration: "market",                       // leave as is
+  keepsake: "A public market here since 1801",  // one short line under the photo in the final spread
 },
 ```
 
 - **Answers** are matched loosely: capitals, extra spaces, punctuation, "the"/"a", and a plural "s" are all ignored. So `"tower"` also accepts `The Towers`. To accept another word, add it to the list in quotes, separated by commas.
 - **Facts:** keep to verified facts only. Put anything unverified in a comment marked `// TODO: verify`, not on the page.
 - The **story** (intro, clerk's note, solution) is in `story:` in the same block.
-- `wrongTriesBeforeSkip: 2` controls when the Skip button appears (it also appears right after using a hint).
+- **Hints come in two steps.** The first is your `hint:` text. The second is written automatically from the first answer in `answers` ("starts with D and has 4 letters"), so **keep the main answer first in the list**.
+- `keepsake:` is a short line shown under each photo on the final spread and in the saved image. Keep it to the verified facts.
+- `wrongTriesBeforeSkip: 2` controls when the Skip button appears (it also appears right after the first hint).
 - Edit carefully: keep the quotes and commas. If the page goes blank after an edit, a quote or comma is probably missing; use the repository's **History** to compare or revert.
-- **After changing `index.html`, also edit `sw.js` and bump `const VERSION = "ledger-v1"` to `"ledger-v2"`** (then v3, and so on). That makes sure phones that already opened the site get the new version.
+- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v4"`** (to v5, then v6, and so on). That makes sure phones that already opened the site get the new version.
 
 ## 5. Demo mode (clean screenshots for the report)
 
@@ -92,6 +96,17 @@ On the story page, testers who can't walk the route can tick **"Doing this from 
 
 ---
 
+## Design system (v2 redesign)
+
+The idea: **a physical travel journal that has come to life.**
+
+- **Palette:** parchment `#F5F0E6`, limestone `#D8CEBD`, forest green `#344B3C` (all buttons and interactive elements), lake blue `#627F91` and antique brass `#AD9160` as sparing accents, charcoal `#292B28` for text. All colours are CSS variables at the top of the `<style>` block.
+- **Type:** Fraunces (serif) for titles and story; the phone's own sans-serif for instructions, clues and buttons (most readable outdoors); Caveat (handwriting) for captions, annotations and notes.
+- **Journey:** a cloth-bound journal **cover** (welcome) swings open into the **prologue**. Each stop is a **chapter** (I–IV) with a postmark, a handwritten annotation and the clue on a ruled card with a folded corner. Hints are **notes that unfold** out of the margin. Unlocking **presses an ink stamp** ("FOUND", or "VISITED" if skipped) onto the page. Photos are **placed** onto the page as a polaroid with tape or photo corners, a different arrangement on each page. The finale **assembles all four polaroids** into one spread.
+- **Progress:** a sticky route bar at the top shows the four stops as small landmark icons on a dashed route: filled when found, ringed in brass where you are, dashed when still ahead. Tap a visited stop to flip back to it.
+- **Stop-motion animation:** animations are built from held frames (CSS `steps(1)` between hand-placed keyframes, about 12 fps) with small deliberate imperfections, so objects get *placed and settle* instead of gliding. Each one is short (0.3 to 0.8 s) and plays only in response to the visitor, with no constant decorative movement. With **Reduce Motion** turned on (iPhone: Settings → Accessibility → Motion), every animation is off and everything still works.
+- **Buttons** press down physically (their edge shadow disappears and they drop 3 px).
+
 ## Privacy, as built
 
 - **No network requests** besides the site's own files (checked with automated browser tests). A Content-Security-Policy in the page blocks loading anything from other websites, even by accident.
@@ -104,20 +119,20 @@ On the story page, testers who can't walk the route can tick **"Doing this from 
 ## Choices made (and why)
 
 - **Title:** kept "The Limestone Ledger: A Kingston Scrapbook Mystery". The fictional clerk is **Thaddeus Penwright** (clearly labelled as made up).
-- **Two photo buttons:** on most phones, `capture="environment"` opens the camera *directly* with no gallery option. So each stop has **Add photo** (camera) and **From gallery**. In tabletop mode, the single button opens the normal picker.
+- **Two photo buttons:** on most phones, `capture="environment"` opens the camera *directly* with no gallery option. So each stop has **Take photo** (camera) and **From gallery**. In tabletop mode, the single button opens the normal picker.
 - **Answers:** Market Square → `market`; City Hall → `dome`; Confederation Park → `arch` **or** `train`/`locomotive`; Shoal Tower → `tower`/`martello`. Synonyms are in the config.
 - **Saving the scrapbook:** on iPhone, the main button opens the share sheet so the guest can tap **Save Image** (saved to Photos). On Android, the main button downloads a PNG, which shows up in Gallery/Photos; a secondary **Share or save with…** button is offered too. The Android share sheet can push photos to cloud apps, so a plain download is the safer default. There's also a preview the guest can press and hold to save.
-- **The image** is 1080 px wide, about 2,200 px tall: title, four polaroids in a 2×2 grid with captions and stop names, the solution, and the date. Missing photos show a tasteful "a page left for next time" frame.
+- **The image** is 1080 px wide, about 2,500 px tall, in the same style as the app: title, four taped polaroids in a 2×2 grid with handwritten captions, chapter names and keepsake lines, the solution card with a wax seal, and the date. Missing photos show a tasteful "a page left for next time" frame.
 - **Photos** are shrunk to at most 1600 px on the long edge (JPEG, quality 0.85) and rotated correctly for iPhone photos.
 - **Storage failure** (e.g., some private-browsing modes): the app keeps working in memory and shows a small banner saying a refresh will lose progress.
-- **Fonts:** system handwriting fonts only (Segoe Print on Windows; Bradley Hand, Noteworthy or Marker Felt on Apple devices; the phone's default cursive on Android), so nothing is downloaded. The look varies slightly by device.
+- **Fonts:** Fraunces and Caveat are bundled in `fonts/` (about 180 KB in total) so the journal looks the same on every phone. They load from the site itself, never from a font service.
 - **Service worker:** network first, falling back to the saved copy after 4 seconds or when offline, so edits reach testers quickly.
 - **Time estimate** on the welcome screen ("about 30 to 60 minutes") is a guess; adjust it in `index.html` after the first tests.
 
 ## What was tested automatically
 
-Playwright, in Chromium (Android-like) and WebKit (Safari engine), at 360×800 and 390×844:
-consent gate → story → wrong answers → hint → skip → correct answers with odd casing → camera and gallery photo → caption → **refresh** (progress, photos and captions survive) → stop with no photo → solved page → times table → **PNG download** (1080×2240) → **Start over** (localStorage and IndexedDB empty) → demo mode. Results: **no horizontal scrolling**, **zero external requests**, **no script errors**. A test photo tagged "rotate 90°" came out upright and shrunk to 1067×1600. The QR generator was checked by decoding its output with a separate QR reader.
+Playwright, in Chromium (Android-like) and WebKit (Safari engine), at 360×800, 390×844 and 1280×800 (desktop), plus two runs with reduced motion turned on:
+consent gate → story → wrong answers → two progressive hints → skip → correct answers with odd casing → camera and gallery photo → caption → **refresh** (progress, photos and captions survive) → stop with no photo → solved page → times table → **PNG download** (1080×2498, with a check that the photos really appear in it) → **Start over** (localStorage and IndexedDB empty) → demo mode. Results: **no horizontal scrolling**, **zero external requests**, **no script errors**. A test photo tagged "rotate 90°" came out upright and shrunk to 1067×1600. The QR generator was checked by decoding its output with a separate QR reader.
 
 ## Please test by hand before testers go out
 

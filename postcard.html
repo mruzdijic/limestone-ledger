@@ -8,11 +8,12 @@
 <title>Limestone Ledger Postcard</title>
 <style>
   /* Paste the live GitHub Pages address into SITE_URL in the script at the bottom. */
+  @font-face{font-family:"Fraunces";src:url(fonts/fraunces-latin-600-normal.woff2) format("woff2");font-weight:600}
+  @font-face{font-family:"Fraunces";src:url(fonts/fraunces-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic}
+  @font-face{font-family:"Caveat";src:url(fonts/caveat-latin-500-normal.woff2) format("woff2");font-weight:500}
   @page { size: 6in 4in; margin: 0; }
-  :root{--paper:#f6f1e6;--ink:#1f2a33;--lake:#1f5f7a;--lake-dark:#174a60;--stone:#8b8c87;--tape:#e9c98b;--tape2:#b9d3d9;
-    --hand:"Segoe Print","Bradley Hand","Noteworthy","Marker Felt","Chalkboard SE",cursive}
-  *{box-sizing:border-box}
-  body{margin:0;background:#d9d4c8;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}
+  :root{--paper:#F5F0E6;--ink:#292B28;--lake:#344B3C;--lake-dark:#2C4234;--stone:#8b8c87;--tape:#D8C49A;--tape2:#A9BBBF;
+    --hand:"Caveat","Segoe Print",cursive;--serif:"Fraunces",Georgia,serif;background:#d9d4c8;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}
   .help{max-width:6.4in;margin:16px auto;padding:12px 16px;background:#fff;border-radius:8px;font-size:15px;line-height:1.5}
   .help code{background:#eee;padding:1px 4px;border-radius:3px}
   .warn{background:#fff3cd;border:1px solid #e0c36a;padding:8px 10px;border-radius:6px}
@@ -21,17 +22,17 @@
   .tape{position:absolute;width:1.1in;height:.28in;background:var(--tape);opacity:.88}
   /* Front */
   .front .art{position:absolute;left:0;right:0;bottom:0;height:2.35in}
-  .front h1{font-family:var(--hand);color:var(--lake-dark);font-size:.44in;line-height:1.05;margin:0;position:absolute;left:.35in;top:.32in;right:.35in}
-  .front p{position:absolute;left:.37in;top:1.0in;margin:0;font-family:Georgia,serif;font-style:italic;font-size:.17in;color:#3f4b55}
+  .front h1{font-family:var(--serif);font-weight:600;color:var(--lake-dark);font-size:.44in;line-height:1.05;margin:0;position:absolute;left:.35in;top:.32in;right:.35in}
+  .front p{position:absolute;left:.37in;top:1.0in;margin:0;font-family:var(--serif);font-style:italic;font-size:.17in;color:#4F514B}
   /* Back */
   .back{display:grid;grid-template-columns:1fr 2.05in;gap:.25in;padding:.32in .32in .28in .4in}
-  .back h2{font-family:var(--hand);color:var(--lake-dark);font-size:.25in;margin:0 0 .08in;line-height:1.1}
+  .back h2{font-family:var(--serif);font-weight:600;color:var(--lake-dark);font-size:.22in;margin:0 0 .08in;line-height:1.1}
   .back p{font-size:.128in;line-height:1.42;margin:0 0 .07in}
   .back .fine{font-size:.1in;color:#555;line-height:1.35}
   .divider{position:absolute;left:3.6in;top:.35in;bottom:.35in;border-left:1.5px dashed #b6ad97}
   .qrbox{background:#fff;padding:.08in;box-shadow:0 2px 6px rgba(0,0,0,.15);transform:rotate(1.5deg);text-align:center;align-self:center;position:relative}
   .qrbox svg{width:100%;height:auto;display:block}
-  .qrbox span{display:block;font-family:var(--hand);font-size:.13in;margin-top:.04in;color:var(--lake-dark)}
+  .qrbox span{display:block;font-family:var(--hand);font-size:.17in;margin-top:.04in;color:var(--lake-dark)}
   .qrbox .tape{top:-.14in;left:50%;margin-left:-.55in;transform:rotate(-3deg);background:var(--tape2)}
   @media print{
     body{background:none}
@@ -55,25 +56,25 @@
   <h1>The Limestone Ledger</h1>
   <p>A Kingston Scrapbook Mystery</p>
   <svg class="art" viewBox="0 0 600 235" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-    <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6f1e6" stop-opacity="0"/><stop offset="1" stop-color="#d6e7ee"/></linearGradient></defs>
+    <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5F0E6" stop-opacity="0"/><stop offset="1" stop-color="#DFE3DD"/></linearGradient></defs>
     <rect width="600" height="235" fill="url(#sky)"/>
-    <circle cx="520" cy="60" r="28" fill="#f3d27a" opacity=".8"/>
+    <circle cx="520" cy="60" r="28" fill="#D9C08A" opacity=".8"/>
     <!-- City Hall -->
     <g>
       <rect x="40" y="120" width="300" height="80" fill="#d4cfc2"/><rect x="40" y="114" width="300" height="8" fill="#a9a497"/>
-      <rect x="150" y="80" width="80" height="36" fill="#cbc6b8"/><path d="M158 80a32 34 0 0 1 64 0z" fill="#6f9c8f"/>
-      <rect x="184" y="34" width="12" height="16" fill="#cbc6b8"/><path d="M180 36a10 10 0 0 1 20 0z" fill="#6f9c8f"/><rect x="176" y="48" width="28" height="14" fill="#cbc6b8"/>
+      <rect x="150" y="80" width="80" height="36" fill="#cbc6b8"/><path d="M158 80a32 34 0 0 1 64 0z" fill="#7F9A8A"/>
+      <rect x="184" y="34" width="12" height="16" fill="#cbc6b8"/><path d="M180 36a10 10 0 0 1 20 0z" fill="#7F9A8A"/><rect x="176" y="48" width="28" height="14" fill="#cbc6b8"/>
       <path d="M130 140h120l-60-26z" fill="#b8b3a5"/>
       <g fill="#eeeadf"><rect x="138" y="142" width="9" height="58"/><rect x="163" y="142" width="9" height="58"/><rect x="186" y="142" width="9" height="58"/><rect x="209" y="142" width="9" height="58"/><rect x="233" y="142" width="9" height="58"/></g>
       <g fill="#5c6a73"><rect x="58" y="135" width="14" height="22"/><rect x="88" y="135" width="14" height="22"/><rect x="278" y="135" width="14" height="22"/><rect x="308" y="135" width="14" height="22"/></g>
     </g>
     <!-- water -->
-    <rect y="200" width="600" height="35" fill="#3f7f9c"/>
-    <path d="M0 212q20-6 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="#bfe0ee" stroke-width="2" fill="none"/>
+    <rect y="200" width="600" height="35" fill="#627F91"/>
+    <path d="M0 212q20-6 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="#C9D6DA" stroke-width="2" fill="none"/>
     <!-- Shoal Tower -->
     <g transform="translate(430 120)"><path d="M0 82V30h80v52z" fill="#cbc6b8"/><path d="M-4 30V10h88v20z" fill="#b8b3a5"/><path d="M18 10V-6h44v16z" fill="#a9a497"/><path d="M16-6a24 13 0 0 1 48 0z" fill="#8b8c87"/><rect x="34" y="50" width="10" height="14" fill="#5c6a73"/><ellipse cx="40" cy="84" rx="56" ry="6" fill="#9b9a93"/></g>
     <!-- polaroid corner -->
-    <g transform="translate(520 120) rotate(8)"><rect width="54" height="62" fill="#fff" stroke="#ddd"/><rect x="5" y="5" width="44" height="40" fill="#cfe3ec"/><path d="M5 45l14-16 10 10 8-8 12 14z" fill="#8fbf7f"/></g>
+    <g transform="translate(520 120) rotate(8)"><rect width="54" height="62" fill="#fff" stroke="#ddd"/><rect x="5" y="5" width="44" height="40" fill="#DFE3DD"/><path d="M5 45l14-16 10 10 8-8 12 14z" fill="#93A386"/></g>
   </svg>
 </section>
 
@@ -95,7 +96,7 @@
   // ===========================================================================
   document.getElementById("urlShow").textContent = SITE_URL;
   document.getElementById("urlWarn").hidden = !/YOUR-USERNAME|YOUR-REPO-NAME/.test(SITE_URL);
-  try { document.getElementById("qr").innerHTML = QR.svg(SITE_URL, { scale: 4, margin: 2, dark: "#17303d" }); }
+  try { document.getElementById("qr").innerHTML = QR.svg(SITE_URL, { scale: 4, margin: 2, dark: "#24362B" }); }
   catch (e) { document.getElementById("qr").textContent = "QR error: " + e.message; }
 </script>
 </body>
