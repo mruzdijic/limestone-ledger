@@ -788,38 +788,42 @@ const GLYPH = { market: "g-market", cityhall: "g-dome", park: "g-arch", tower: "
 const REDUCED = (() => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } })();
 
 /* ---- Page-turn sound ----
-   Synthesised on the phone with the Web Audio API (filtered noise shaped like a paper
-   rustle and a soft landing flap). No audio file and no network: nothing is downloaded.
-   On iPhone the ring/silent switch mutes it, like any web sound. */
+   sounds/page-flip.mp3 is served from this site (no external request) and played with
+   the Web Audio API. On iPhone the ring/silent switch mutes it, like any web sound. */
 const SOUND_KEY = "limestone-ledger-sound";
-let audioCtx = null, paperNoise = null;
+const FLIP_URL = "sounds/page-flip.mp3";
+const FLIP_START = 0.7, FLIP_LEN = 1.3;   // seconds within the file: skip its silent lead-in, stop after the rustle
+let audioCtx = null, flipBuf = null, flipGain = 1, flipDecoding = null, flipBytes = null;
 function soundOn() { try { return localStorage.getItem(SOUND_KEY) !== "off"; } catch (e) { return true; } }
 function setSound(on) { try { if (on) localStorage.removeItem(SOUND_KEY); else localStorage.setItem(SOUND_KEY, "off"); } catch (e) {} }
-function pageTurnGraph(ctx, t) {
-  const sr = ctx.sampleRate;
-  if (!paperNoise || paperNoise.sampleRate !== sr) {
-    paperNoise = ctx.createBuffer(1, Math.floor(sr * 0.8), sr);
-    const d = paperNoise.getChannelData(0); let last = 0;
-    for (let i = 0; i < d.length; i++) { last = last * 0.55 + (Math.random() * 2 - 1) * 0.45; d[i] = last; } // softened noise = paper, not hiss
-  }
-  // the rustle: lift, a slight catch, then the sweep across
-  const src = ctx.createBufferSource(); src.buffer = paperNoise;
-  const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 380;
-  const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 0.85;
-  bp.frequency.setValueAtTime(900, t); bp.frequency.linearRampToValueAtTime(3000, t + 0.16);
-  bp.frequency.linearRampToValueAtTime(1900, t + 0.32); bp.frequency.linearRampToValueAtTime(1100, t + 0.5);
-  const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t);
-  g.gain.linearRampToValueAtTime(0.32, t + 0.04); g.gain.linearRampToValueAtTime(0.12, t + 0.1);
-  g.gain.linearRampToValueAtTime(0.6, t + 0.21); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
-  src.connect(hp).connect(bp).connect(g).connect(ctx.destination);
-  src.start(t, Math.random() * 0.15); src.stop(t + 0.55);
-  // the page landing: a short, soft, low flap
-  const s2 = ctx.createBufferSource(); s2.buffer = paperNoise;
-  const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 650;
-  const g2 = ctx.createGain(); g2.gain.setValueAtTime(0.0001, t + 0.37);
-  g2.gain.linearRampToValueAtTime(0.75, t + 0.395); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
-  s2.connect(lp).connect(g2).connect(ctx.destination);
-  s2.start(t + 0.37, 0.3); s2.stop(t + 0.52);
+function prefetchFlip() {   // fetch the bytes early so the first page turn isn't late
+  if (!flipBytes) flipBytes = fetch(FLIP_URL).then(r => (r.ok ? r.arrayBuffer() : null)).catch(() => null);
+  return flipBytes;
+}
+function decodeFlip() {
+  if (flipBuf) return Promise.resolve(flipBuf);
+  if (flipDecoding) return flipDecoding;
+  flipDecoding = prefetchFlip().then(ab => ab && new Promise((res, rej) => audioCtx.decodeAudioData(ab.slice(0), res, rej)))
+    .then(buf => {
+      if (!buf) return null;
+      // the recording is quiet: normalise its peak so it carries on a phone speaker
+      let pk = 0;
+      for (let c = 0; c < buf.numberOfChannels; c++) { const d = buf.getChannelData(c); for (let i = 0; i < d.length; i += 2) pk = Math.max(pk, Math.abs(d[i])); }
+      flipGain = pk ? Math.min(8, 0.6 / pk) : 1;
+      return (flipBuf = buf);
+    })
+    .catch(() => { flipDecoding = null; return null; });
+  return flipDecoding;
+}
+function scheduleFlip(ctx, buf, gain, t) {
+  const len = Math.max(0.1, Math.min(FLIP_LEN, buf.duration - FLIP_START));
+  const src = ctx.createBufferSource(); src.buffer = buf;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(gain, t);
+  g.gain.setValueAtTime(gain, t + len - 0.3);
+  g.gain.linearRampToValueAtTime(0.0001, t + len);   // gentle fade instead of a hard cut
+  src.connect(g).connect(ctx.destination);
+  src.start(t, FLIP_START, len);
 }
 function playPageTurn() {
   if (!soundOn()) return;
@@ -828,7 +832,8 @@ function playPageTurn() {
     if (!AC) return;
     if (!audioCtx) audioCtx = new AC();
     if (audioCtx.state === "suspended") audioCtx.resume();
-    pageTurnGraph(audioCtx, audioCtx.currentTime + 0.02);
+    if (flipBuf) scheduleFlip(audioCtx, flipBuf, flipGain, audioCtx.currentTime + 0.01);
+    else decodeFlip().then(buf => { if (buf) scheduleFlip(audioCtx, buf, flipGain, audioCtx.currentTime + 0.01); });
   } catch (e) { /* sound is a nicety; never let it break the page */ }
 }
 let quietNextTurn = false;
@@ -1645,6 +1650,7 @@ function tape(ctx, x, y, w, h, deg, color) {
   if (DEMO) await loadDemo(); else { loadState(); await checkStorage(); }
   if (!state.consent) state.screen = "consent";
   render(false);
+  if (soundOn()) prefetchFlip();
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost") && !DEMO) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
