@@ -19,7 +19,7 @@ Last updated: **23 November 2026**.
 | **Local folder** | `C:\projects\ENIN301Site` |
 | **Feedback form** | Google Form set as `FEEDBACK_FORM_URL` in `index.html` (anonymous, no sign-in required) |
 | **Testing window** | 6–8 adult testers, until about 25 November 2026 |
-| **Offline cache version** | `ledger-v7` in `sw.js` |
+| **Offline cache version** | `ledger-v8` in `sw.js` |
 
 ## Hard rules (from the course handout; never break)
 
@@ -100,7 +100,7 @@ README.md           setup, editing, privacy, choices, manual test checklist
 ## How to make changes later
 
 1. Edit `index.html` (content: the `CONFIG` block at the top of the script) on GitHub with the pencil icon, or locally.
-2. **Bump `VERSION` in `sw.js`** (`ledger-v7` → `ledger-v8`) so phones fetch the new copy.
+2. **Bump `VERSION` in `sw.js`** (`ledger-v8` → `ledger-v9`) so phones fetch the new copy.
 3. Commit/push to `main`; GitHub Pages redeploys in about 30–60 seconds.
 4. Testers reload the page once.
 

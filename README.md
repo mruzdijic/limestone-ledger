@@ -85,7 +85,7 @@ Everything is in one block at the top of the `<script>` in `index.html`, between
 - `keepsake:` is a short line shown under each photo on the final spread and in the saved image. Keep it to the verified facts.
 - `wrongTriesBeforeSkip: 2` controls when the Skip button appears (it also appears right after the first hint).
 - Edit carefully: keep the quotes and commas. If the page goes blank after an edit, a quote or comma is probably missing; use the repository's **History** to compare or revert.
-- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v7"`** (to v8, then v9, and so on). That makes sure phones that already opened the site get the new version.
+- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v8"`** (to v9, then v10, and so on). That makes sure phones that already opened the site get the new version.
 
 ## 5. Demo mode (clean screenshots for the report)
 
