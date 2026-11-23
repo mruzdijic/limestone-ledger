@@ -339,6 +339,7 @@ async function photoURL(i) {
   if (photoURLs.has(i)) return photoURLs.get(i);
   const b = await getPhoto(i);
   if (!b) return null;
+  if (photoURLs.has(i)) return photoURLs.get(i); // another caller won the race while we waited
   const u = URL.createObjectURL(b);
   photoURLs.set(i, u);
   return u;
@@ -411,14 +412,53 @@ async function readExifOrientation(file) {
   } catch (e) {}
   return 1;
 }
+// Resolves only once the image is fully decoded. Drawing a not-yet-decoded image
+// onto a canvas can silently draw nothing on mobile browsers (blank/white photos).
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.decoding = "async";
-    img.onload = () => resolve(img);
+    img.onload = async () => {
+      try { if (img.decode) await img.decode(); } catch (e) { /* onload already fired; still usable */ }
+      resolve(img);
+    };
     img.onerror = () => reject(new Error("decode"));
     img.src = src;
   });
+}
+// True if the canvas has real pixels in it (a failed draw leaves it fully transparent).
+function canvasHasPixels(c) {
+  try {
+    const x = c.getContext("2d"), n = 6;
+    for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
+      if (x.getImageData(Math.floor((a + .5) * c.width / n), Math.floor((b + .5) * c.height / n), 1, 1).data[3] > 0) return true;
+    }
+    return false;
+  } catch (e) { return true; } // can't check: assume fine
+}
+// Draws photo i as a centre-cropped square onto its own small canvas and verifies it.
+// Tries a decoded ImageBitmap first, then an <img>, then once more after a short pause.
+async function photoSquare(i, size) {
+  const blob = await getPhoto(i);
+  if (!blob) return null;
+  const attempts = [
+    async () => (window.createImageBitmap ? createImageBitmap(blob) : null),
+    async () => { const u = URL.createObjectURL(blob); try { return await loadImage(u); } finally { setTimeout(() => URL.revokeObjectURL(u), 2000); } },
+    async () => { await new Promise(r => setTimeout(r, 400)); const u = URL.createObjectURL(blob); try { return await loadImage(u); } finally { setTimeout(() => URL.revokeObjectURL(u), 2000); } },
+  ];
+  for (const attempt of attempts) {
+    let src = null;
+    try { src = await attempt(); } catch (e) { src = null; }
+    if (!src) continue;
+    const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+    if (!sw || !sh) { if (src.close) src.close(); continue; }
+    const c = document.createElement("canvas"); c.width = c.height = size;
+    const side = Math.min(sw, sh);
+    try { c.getContext("2d").drawImage(src, (sw - side) / 2, (sh - side) / 2, side, side, 0, 0, size, size); } catch (e) {}
+    if (src.close) src.close();
+    if (canvasHasPixels(c)) return c;
+    c.width = c.height = 0;
+  }
+  return null;
 }
 async function processPhoto(file) {
   const orient = BROWSER_AUTO_ORIENTS ? 1 : await readExifOrientation(file);
@@ -442,6 +482,11 @@ async function processPhoto(file) {
       case 8: ctx.transform(0, -1, 1, 0, 0, dw); break;
     }
     ctx.drawImage(img, 0, 0, dw, dh);
+    if (!canvasHasPixels(c)) {           // decode raced the draw: give it a moment and redraw once
+      await new Promise(r => setTimeout(r, 400));
+      ctx.drawImage(img, 0, 0, dw, dh);
+      if (!canvasHasPixels(c)) throw new Error("blank");
+    }
     const blob = await new Promise(r => c.toBlob(r, "image/jpeg", JPEG_Q));
     c.width = c.height = 0; // free memory on iOS
     if (!blob) throw new Error("encode");
@@ -964,11 +1009,11 @@ async function buildScrapbookImage() {
   ctx.beginPath(); ctx.moveTo(PAD + 60, 295); ctx.lineTo(W - PAD - 60, 295); ctx.stroke(); ctx.setLineDash([]);
 
   // polaroids 2x2
-  const imgs = await Promise.all(CONFIG.stops.map(async (s, i) => {
-    const u = await photoURL(i);
-    if (!u) return null;
-    try { return await loadImage(u); } catch (e) { return null; }
-  }));
+  // One photo at a time (keeps phone memory low), each verified before use.
+  const imgs = [];
+  for (let i = 0; i < N; i++) {
+    try { imgs.push(await photoSquare(i, PHOTO * 2)); } catch (e) { imgs.push(null); }
+  }
   const rot = [-2.5, 2, 1.8, -2.2];
   CONFIG.stops.forEach((s, i) => {
     const col = i % 2, row = Math.floor(i / 2);
@@ -981,8 +1026,7 @@ async function buildScrapbookImage() {
     const px = -PHOTO / 2, py = -CARD_H / 2 + 20;
     const img = imgs[i];
     if (img) {
-      const sw = img.naturalWidth, sh = img.naturalHeight, side = Math.min(sw, sh);
-      ctx.drawImage(img, (sw - side) / 2, (sh - side) / 2, side, side, px, py, PHOTO, PHOTO);
+      ctx.drawImage(img, px, py, PHOTO, PHOTO);
     } else {
       ctx.fillStyle = "#ece7dc"; ctx.fillRect(px, py, PHOTO, PHOTO);
       ctx.strokeStyle = "#cfcbc0"; ctx.lineWidth = 3; ctx.setLineDash([12, 10]);
