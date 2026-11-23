@@ -1,7 +1,7 @@
 /* Service worker: keeps the site working on a weak signal once loaded.
    It only caches this site's own files. It never sees or stores photos.
    If you change index.html, bump VERSION so phones pick up the new copy. */
-const VERSION = "ledger-v2";
+const VERSION = "ledger-v3";
 const FILES = ["./", "index.html", "icon.svg", "manifest.webmanifest"];
 
 self.addEventListener("install", e => {
