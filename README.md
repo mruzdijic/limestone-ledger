@@ -85,7 +85,7 @@ Everything is in one block at the top of the `<script>` in `index.html`, between
 - `keepsake:` is a short line shown under each photo on the final spread and in the saved image. Keep it to the verified facts.
 - `wrongTriesBeforeSkip: 2` controls when the Skip button appears (it also appears right after the first hint).
 - Edit carefully: keep the quotes and commas. If the page goes blank after an edit, a quote or comma is probably missing; use the repository's **History** to compare or revert.
-- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v6"`** (to v7, then v8, and so on). That makes sure phones that already opened the site get the new version.
+- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v7"`** (to v8, then v9, and so on). That makes sure phones that already opened the site get the new version.
 
 ## 5. Demo mode (clean screenshots for the report)
 
@@ -112,6 +112,7 @@ The idea: **a physical travel journal that has come to life.**
 - **Stop-motion animation:** animations are built from held frames (CSS `steps(1)` between hand-placed keyframes, about 12 fps) with small deliberate imperfections, so objects get *placed and settle* instead of gliding. Each one is short (0.3 to 0.8 s) and plays only in response to the visitor, with no constant decorative movement. With **Reduce Motion** turned on (iPhone: Settings → Accessibility → Motion), every animation is off and everything still works.
 - **Buttons** press down physically (their edge shadow disappears and they drop 3 px).
 - **Page-turn sound:** `sounds/page-flip.mp3` ("Page Flip 1" by oxidvideos, downloaded by the team; the filename suggests Pixabay, whose licence allows free use without credit, so please confirm the source). It plays on each page change and when the cover opens, served from this site, with nothing loaded from elsewhere. The app skips the file's silent first 0.7 s, plays 1.3 s with a short fade, and boosts the quiet recording. To use a different sound, replace that file (keep the name) and adjust `FLIP_START`/`FLIP_LEN` in `index.html`. Guests can switch it off with **Sound: on/off** at the bottom of any page. On iPhone, the silent switch mutes it.
+- **Correct-answer ding:** `sounds/ding.mp3` ("ding" by freesound_community, downloaded by the team; the filename suggests Pixabay, so please confirm the source). It plays once when an answer unlocks a page, timed 0.2 s in so it lands with the ink stamp, and is levelled a little below the page turn. To change it, replace that file (keep the name); `DING_DELAY` in `index.html` sets the timing. The same **Sound: on/off** switch silences it.
 
 ## Privacy, as built
 

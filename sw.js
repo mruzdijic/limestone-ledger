@@ -1,11 +1,11 @@
 /* Service worker: keeps the site working on a weak signal once loaded.
    It only caches this site's own files. It never sees or stores photos.
    If you change index.html, bump VERSION so phones pick up the new copy. */
-const VERSION = "ledger-v6";
+const VERSION = "ledger-v7";
 const FILES = ["./", "index.html", "icon.svg", "manifest.webmanifest",
   "fonts/fraunces-latin-400-normal.woff2", "fonts/fraunces-latin-400-italic.woff2", "fonts/fraunces-latin-600-normal.woff2",
   "fonts/fraunces-latin-700-normal.woff2", "fonts/caveat-latin-500-normal.woff2", "fonts/caveat-latin-700-normal.woff2",
-  "sounds/page-flip.mp3"];
+  "sounds/page-flip.mp3", "sounds/ding.mp3"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

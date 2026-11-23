@@ -19,7 +19,7 @@ Last updated: **23 November 2026**.
 | **Local folder** | `C:\projects\ENIN301Site` |
 | **Feedback form** | Google Form set as `FEEDBACK_FORM_URL` in `index.html` (anonymous, no sign-in required) |
 | **Testing window** | 6–8 adult testers, until about 25 November 2026 |
-| **Offline cache version** | `ledger-v6` in `sw.js` |
+| **Offline cache version** | `ledger-v7` in `sw.js` |
 
 ## Hard rules (from the course handout; never break)
 
@@ -41,7 +41,7 @@ sw.js               offline cache (network-first, 4 s fallback). Bump VERSION af
 postcard.html       printable 6×4 in postcard; SITE_URL constant feeds the QR code
 qr.js               offline QR generator (byte mode, level M, versions 1–10)
 fonts/              Fraunces (serif) + Caveat (handwriting), OFL licences included
-sounds/             page-flip.mp3 (page-turn sound)
+sounds/             page-flip.mp3 (page turns), ding.mp3 (correct answer)
 icon.svg, manifest.webmanifest
 tests/flow.test.js  end-to-end Playwright test (see "Testing" below)
 README.md           setup, editing, privacy, choices, manual test checklist
@@ -51,7 +51,7 @@ README.md           setup, editing, privacy, choices, manual test checklist
 
 1. **EDIT HERE block:** `FEEDBACK_FORM_URL` and `CONFIG` (story text, the 4 stops with clue / answers / hint / facts / keepsake, demo captions, `wrongTriesBeforeSkip`). Content changes only ever happen here.
 2. **Core:** state (`localStorage` key `limestone-ledger-v1`), photos in IndexedDB (`limestone-ledger` database, stored as ArrayBuffers), in-memory fallback with a warning banner, answer matching (`norm`/`isCorrect`), photo processing (EXIF orientation, ≤1600 px JPEG at 0.85), `photoSquare()` (verified decode for the export).
-3. **Screens:** page-turn sound (`playPageTurn`, `FLIP_START`/`FLIP_LEN`), `go()`/`render()` with direction-aware page turns, route progress bar, journal cover (consent), prologue letter, chapter pages (clue + 2-step hints), scrapbook pages (stamp, polaroid, field note), footer (Re-read story · Sound on/off · Start over).
+3. **Screens:** sound effects (`playPageTurn`, `playDing`, `FLIP_START`/`FLIP_LEN`, `DING_DELAY`), `go()`/`render()` with direction-aware page turns, route progress bar, journal cover (consent), prologue letter, chapter pages (clue + 2-step hints), scrapbook pages (stamp, polaroid, field note), footer (Re-read story · Sound on/off · Start over).
 4. **Illustrations:** inline SVG landmark art (recoloured to the palette), tabletop sketch map, demo-mode loader.
 5. **Finale + export:** solved page (wax seal, assembled spread, field log, feedback), `buildScrapbookImage()` (1080×~2500 PNG canvas), Web Share / download.
 6. **Boot.**
@@ -69,6 +69,7 @@ README.md           setup, editing, privacy, choices, manual test checklist
 5. **Visual redesign** ("a physical travel journal brought to life"): new palette, bundled fonts, journal cover that swings open, chapter pages with postmarks, unfolding hint notes, ink stamp on unlock, polaroids placed with tape or photo corners (varies per page), sticky illustrated route bar, stop-motion animation, assembled finale spread, restyled export image and postcard. Added a **second hint** (auto-generated: first letter + length of `answers[0]`) and a **keepsake** line per stop.
 6. **Polish from team feedback:** centred the "Case Closed" wax seal (now red wax, matching the clerk's "TP" seal), riddles in the Caveat handwriting font sitting on the ruled lines, removed "(he's made up; the places aren't)" from the prologue, added a page-turn sound with a Sound on/off toggle.
 7. **Sound replaced (23 Nov):** the synthesized sound was "too crispy" (79% of its energy above 3 kHz), so it was replaced with the team's recording `sounds/page-flip.mp3` (21% above 3 kHz). The silent lead-in is skipped, 1.3 s plays with a fade, and the quiet file is volume-boosted.
+8. **Correct-answer ding (23 Nov):** the team's `sounds/ding.mp3` plays when an answer unlocks a page, 0.2 s in so it lands with the ink stamp. It respects the Sound on/off switch.
 
 ## Decisions worth remembering
 
@@ -81,7 +82,7 @@ README.md           setup, editing, privacy, choices, manual test checklist
 
 ## Still open / to confirm
 
-- [ ] **Sound licence:** `page-flip.mp3` is "Page Flip 1" by oxidvideos. The filename suggests Pixabay, whose licence allows free use without credit; confirm the source.
+- [ ] **Sound licence:** `page-flip.mp3` is "Page Flip 1" by oxidvideos. The filename suggests Pixabay, whose licence allows free use without credit; confirm the source. Same for `ding.mp3` ("ding" by freesound_community, also probably Pixabay).
 - [ ] **Google Form settings:** "Collect email addresses: Do not collect" and "Limit to 1 response: off" (that setting forces sign-in).
 - [ ] **Real-phone checks** (README → "Please test by hand"): iPhone camera, Save Image to Photos, Reduce Motion, the sound on a speaker; Android download → Gallery; airplane mode after the first load.
 - [ ] **Walk the route once:** every riddle's answer should be easy to spot on site; adjust the "30 to 60 minutes" estimate.
@@ -99,7 +100,7 @@ README.md           setup, editing, privacy, choices, manual test checklist
 ## How to make changes later
 
 1. Edit `index.html` (content: the `CONFIG` block at the top of the script) on GitHub with the pencil icon, or locally.
-2. **Bump `VERSION` in `sw.js`** (`ledger-v6` → `ledger-v7`) so phones fetch the new copy.
+2. **Bump `VERSION` in `sw.js`** (`ledger-v7` → `ledger-v8`) so phones fetch the new copy.
 3. Commit/push to `main`; GitHub Pages redeploys in about 30–60 seconds.
 4. Testers reload the page once.
 
