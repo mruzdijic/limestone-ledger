@@ -80,7 +80,7 @@ Everything is in one block at the top of the `<script>` in `index.html`, between
 - `keepsake:` is a short line shown under each photo on the final spread and in the saved image. Keep it to the verified facts.
 - `wrongTriesBeforeSkip: 2` controls when the Skip button appears (it also appears right after the first hint).
 - Edit carefully: keep the quotes and commas. If the page goes blank after an edit, a quote or comma is probably missing; use the repository's **History** to compare or revert.
-- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v4"`** (to v5, then v6, and so on). That makes sure phones that already opened the site get the new version.
+- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v5"`** (to v6, then v7, and so on). That makes sure phones that already opened the site get the new version.
 
 ## 5. Demo mode (clean screenshots for the report)
 
@@ -106,6 +106,7 @@ The idea: **a physical travel journal that has come to life.**
 - **Progress:** a sticky route bar at the top shows the four stops as small landmark icons on a dashed route: filled when found, ringed in brass where you are, dashed when still ahead. Tap a visited stop to flip back to it.
 - **Stop-motion animation:** animations are built from held frames (CSS `steps(1)` between hand-placed keyframes, about 12 fps) with small deliberate imperfections, so objects get *placed and settle* instead of gliding. Each one is short (0.3 to 0.8 s) and plays only in response to the visitor, with no constant decorative movement. With **Reduce Motion** turned on (iPhone: Settings → Accessibility → Motion), every animation is off and everything still works.
 - **Buttons** press down physically (their edge shadow disappears and they drop 3 px).
+- **Page-turn sound:** a soft paper rustle plays on each page change and when the cover opens. It is synthesised on the phone with the Web Audio API (no audio file, nothing downloaded). Guests can switch it off with **Sound: on/off** at the bottom of any page. On iPhone, the silent switch mutes it, like any web sound.
 
 ## Privacy, as built
 
