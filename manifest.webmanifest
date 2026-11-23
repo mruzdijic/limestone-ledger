@@ -1,0 +1,10 @@
+{
+  "name": "The Limestone Ledger",
+  "short_name": "Limestone Ledger",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f1e6",
+  "theme_color": "#1f5f7a",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
