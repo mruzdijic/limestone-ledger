@@ -14,6 +14,7 @@ It's a static website with no server, no sign-up, no analytics, and nothing load
 | `postcard.html` | Printable 6×4 in postcard (front and back) with a QR code. |
 | `qr.js` | Small QR code generator used by the postcard. It runs offline, so no QR website ever sees your link. |
 | `fonts/` | Bundled fonts: **Fraunces** (headings) and **Caveat** (handwriting), both SIL Open Font License (licence files included). Served from the repo, so no font service is contacted. |
+| `sounds/` | The page-turn sound (MP3, about 80 KB). |
 | `icon.svg`, `manifest.webmanifest` | Browser tab icon and "Add to Home Screen" info. |
 
 ---
@@ -80,7 +81,7 @@ Everything is in one block at the top of the `<script>` in `index.html`, between
 - `keepsake:` is a short line shown under each photo on the final spread and in the saved image. Keep it to the verified facts.
 - `wrongTriesBeforeSkip: 2` controls when the Skip button appears (it also appears right after the first hint).
 - Edit carefully: keep the quotes and commas. If the page goes blank after an edit, a quote or comma is probably missing; use the repository's **History** to compare or revert.
-- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v5"`** (to v6, then v7, and so on). That makes sure phones that already opened the site get the new version.
+- **After changing `index.html`, also edit `sw.js` and bump the number in `const VERSION = "ledger-v6"`** (to v7, then v8, and so on). That makes sure phones that already opened the site get the new version.
 
 ## 5. Demo mode (clean screenshots for the report)
 
@@ -106,7 +107,7 @@ The idea: **a physical travel journal that has come to life.**
 - **Progress:** a sticky route bar at the top shows the four stops as small landmark icons on a dashed route: filled when found, ringed in brass where you are, dashed when still ahead. Tap a visited stop to flip back to it.
 - **Stop-motion animation:** animations are built from held frames (CSS `steps(1)` between hand-placed keyframes, about 12 fps) with small deliberate imperfections, so objects get *placed and settle* instead of gliding. Each one is short (0.3 to 0.8 s) and plays only in response to the visitor, with no constant decorative movement. With **Reduce Motion** turned on (iPhone: Settings → Accessibility → Motion), every animation is off and everything still works.
 - **Buttons** press down physically (their edge shadow disappears and they drop 3 px).
-- **Page-turn sound:** a soft paper rustle plays on each page change and when the cover opens. It is synthesised on the phone with the Web Audio API (no audio file, nothing downloaded). Guests can switch it off with **Sound: on/off** at the bottom of any page. On iPhone, the silent switch mutes it, like any web sound.
+- **Page-turn sound:** `sounds/page-flip.mp3` ("Page Flip 1" by oxidvideos, downloaded by the team; the filename suggests Pixabay, whose licence allows free use without credit, so please confirm the source). It plays on each page change and when the cover opens, served from this site, with nothing loaded from elsewhere. The app skips the file's silent first 0.7 s, plays 1.3 s with a short fade, and boosts the quiet recording. To use a different sound, replace that file (keep the name) and adjust `FLIP_START`/`FLIP_LEN` in `index.html`. Guests can switch it off with **Sound: on/off** at the bottom of any page. On iPhone, the silent switch mutes it.
 
 ## Privacy, as built
 
